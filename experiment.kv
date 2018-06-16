@@ -1,0 +1,68 @@
+#:kivy 1.10.1
+#:import sm kivy.uix.screenmanager
+
+ScreenManager:
+    id: screen_manager
+    transition: sm.NoTransition()
+
+    WelcomeScreen:
+        id: welcome_screen
+        name: 'WelcomeScreen'
+        manager: screen_manager
+
+    DataScreen:
+        name: 'DataScreen'
+        manager: screen_manager
+        label_text: welcome_screen.text
+
+<WelcomeScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        Label:
+            text: "Please upload your sentences"
+            font_size: 50
+
+        Button:
+            size_hint_y: None
+            height: 100
+            text: "Upload"
+            font_size: 50
+            on_release: root.show_load()
+            background_color: (1, 0, 0, 1)
+
+
+<DataScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        RstDocument:
+            text: root.label_text
+
+        Button:
+            size_hint_y: None
+            height: 100
+            font_size: 50
+            text: 'Go back'
+            on_press: root.manager.current = 'WelcomeScreen'
+
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+
+        FileChooserListView:
+            id: filechooser
+            path: root.get_path()
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Upload"
+                on_release: root.load(filechooser.path, filechooser.selection)
