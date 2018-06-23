@@ -1,0 +1,223 @@
+<SocioLingScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        ColoredLabel:
+            text: "Please answer a couple of questions about yourself. It will help us analyse data better."
+
+        Widget:
+            size_hint_y: None
+            height: 50
+
+        GridLayout:
+            cols: 2
+            row_force_default: True
+            row_default_height: 40
+
+            ColoredLabel:
+                text: "Enter your name or choose a nickname"
+                background_color: 0.95, 0.95, 0.95, 1
+                color: 0, 0, 0, 1
+                size_hint_x: None
+                width: 400
+
+            TextInput:
+                font_size: 20
+                multiline: False
+                on_text: root.add_choice("name", self.text)
+                background_color: 0.608, 0.608, 0.627, 0.1
+
+            ColoredLabel:
+                text: "Choose your age range"
+                size_hint_x: None
+                width: 400
+                background_color: 1, 1, 1, 1
+                color: 0, 0, 0, 1
+
+            Spinner:
+                text: "choose range"
+                color: 0, 0, 0, 1
+                font_size: 20
+                background_color: 0.608, 0.608, 0.627, 0.2
+                values: ("18–24", "25–29", "30–39", "40–49", "50–59", "60+")
+                on_text: root.add_choice("age", self.text)
+
+            ColoredLabel:
+                text: "Choose your gender"
+                size_hint: (None, None)
+                width: 400
+                height: 40
+                background_color: 0.95, 0.95, 0.95, 1
+                color: 0, 0, 0, 1
+
+            GridLayout:
+                cols: 3
+
+                ColoredLabel:
+                    background_color: 0.608, 0.608, 0.627, 0.1
+                    color: 0, 0, 0, 1
+                    text: "female"
+
+                ColoredLabel:
+                    background_color: 0.608, 0.608, 0.627, 0.1
+                    color: 0, 0, 0, 1
+                    text: "male"
+
+                ColoredLabel:
+                    background_color: 0.608, 0.608, 0.627, 0.1
+                    color: 0, 0, 0, 1
+                    text: "other"
+
+                CheckBox:
+                    size_hint_y: None
+                    height: '40dp'
+                    color: 0, 0, 0, 1
+                    group: "gender"
+                    on_active: root.checkbox_choice("gender", "female", self.state)
+
+                CheckBox:
+                    size_hint_y: None
+                    height: '40dp'
+                    color: 0, 0, 0, 1
+                    group: "gender"
+                    on_active: root.checkbox_choice("gender", "male", self.state)
+
+                CheckBox:
+                    size_hint_y: None
+                    height: '40dp'
+                    color: 0, 0, 0, 1
+                    group: "gender"
+                    on_active: root.checkbox_choice("gender", "other", self.state)
+
+            Widget:
+                size_hint_x: None
+                width: 400
+
+            Widget:
+
+            ColoredLabel:
+                text: "What is your level of education?"
+                size_hint_x: None
+                width: 400
+                background_color: 0.95, 0.95, 0.95, 1
+                color: 0, 0, 0, 1
+
+            Spinner:
+                text: "choose level"
+                font_size: 20
+                color: 0, 0, 0, 1
+                background_color: 0.608, 0.608, 0.627, 0.2
+                values: ("школа", "бакалавриат", "специалитет", "магистратура", "аспирантура", "докторантура")
+                on_text: root.add_choice("education", self.text)
+
+            ColoredLabel:
+                text: "What is your degree / work subject?"
+                size_hint_x: None
+                width: 400
+                background_color: 1, 1, 1, 1
+                color: 0, 0, 0, 1
+
+            TextInput:
+                text: ''
+                font_size: 20
+                background_color: 0.608, 0.608, 0.627, 0.1
+                color: 0, 0, 0, 1
+                multiline: False
+                on_text: root.add_choice("work_subject", self.text)
+
+            ColoredLabel:
+                text: "What city were you born in?"
+                size_hint_x: None
+                width: 400
+                background_color: 0.95, 0.95, 0.95, 1
+                color: 0, 0, 0, 1
+
+            ComboEdit:
+                font_size: 20
+                multiline: False
+                background_color: 0.608, 0.608, 0.627, 0.1
+                text: "start typing to see suggestions"
+                foreground_color: 0.608, 0.608, 0.627, 1
+                options: ""
+                on_text:
+                    root.suggest_cities(self)
+                    root.add_city("birth_city", self.text)
+
+            ColoredLabel:
+                text: "What city do you live in now?"
+                size_hint_x: None
+                width: 400
+                background_color: 1, 1, 1, 1
+                color: 0, 0, 0, 1
+
+            ComboEdit:
+                font_size: 20
+                multiline: False
+                background_color: 0.608, 0.608, 0.627, 0.1
+                foreground_color: 0.608, 0.608, 0.627, 1
+                text: "start typing to see suggestions"
+                options: ""
+                on_text:
+                    root.suggest_cities(self)
+                    root.add_city("now_city", self.text)
+
+            ColoredLabel:
+                text: "What is your native language / languages?"
+                size_hint_x: None
+                width: 400
+                background_color: 0.95, 0.95, 0.95, 1
+                color: 0, 0, 0, 1
+
+            MultiSelectSpinner:
+                color: 0, 0, 0, 1
+                font_size: 20
+                background_color: 0.608, 0.608, 0.627, 0.2
+                text: "choose 1 or more"
+                values: root.languages
+                on_text: root.add_choice("mother_tongue", self.selected_values)
+
+            ColoredLabel:
+                text: "What other languages do you speak?"
+                size_hint_x: None
+                width: 400
+                background_color: 1, 1, 1, 1
+                color: 0, 0, 0, 1
+
+            MultiSelectSpinner:
+                color: 0, 0, 0, 1
+                font_size: 20
+                background_color: 0.608, 0.608, 0.627, 0.2
+                text: "choose 1 or more"
+                values: root.languages
+                on_text: root.add_choice("other_langs", self.selected_values)
+
+        Button:
+            text: "Continue"
+            size_hint_y: None
+            height: 40
+            font_size: 25
+            background_color: 0.608, 0.608, 0.627, 0.5
+            on_press: root.save_info()
+
+
+<SocioLingPopUp>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        on_size: self.center = root.center
+        orientation: "vertical"
+
+        Label:
+#            size_hint_y: None
+#            text_size: self.width, self.height
+#            height: self.texture_size[1]
+            font_size: 20
+            text: root.errors_text
+            markup: True
+
+        Button:
+            size_hint_y: None
+            height: 30
+            font_size: 20
+            text: "Got it"
+            on_release: root.cancel()

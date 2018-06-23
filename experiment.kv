@@ -1,5 +1,6 @@
 #:kivy 1.10.1
 #:import sm kivy.uix.screenmanager
+#:include socioling.kv
 
 ScreenManager:
     id: screen_manager
@@ -23,6 +24,9 @@ ScreenManager:
         name: "SocioLingScreen"
         manager: screen_manager
 
+    TrainingScreen:
+        name: "TrainingScreen"
+        manager: screen_manager
 
 <WelcomeScreen>:
     BoxLayout:
@@ -87,44 +91,6 @@ ScreenManager:
             font_size: 50
             on_press: root.manager.current = "SocioLingScreen"
             background_color: (0, 1, 0, 1)
-
-
-<SocioLingScreen>:
-    BoxLayout:
-        orientation: "vertical"
-
-        ColoredLabel:
-            text: "Please answer a couple of questions about yourself. It will help us analyse data better."
-
-        Widget:
-            size_hint_y: None
-            height: 50
-
-        GridLayout:
-            cols: 2
-            row_force_default: True
-            row_default_height: 40
-
-            ColoredLabel:
-                color: 0, 0, 0, 1
-                text: 'Hello 1'
-                size_hint_x: None
-                width: 200
-
-            Button:
-                text: 'World 1'
-                on_press: root.add_choice()
-
-            ColoredLabel:
-                color: 0, 0, 0, 1
-                text: 'Hello 2'
-                size_hint_x: None
-                width: 200
-
-            Spinner:
-                text: "Home"
-                values: ('Home', 'Work', 'Other', 'Custom')
-
 
 <LoadDialog>:
     BoxLayout:
