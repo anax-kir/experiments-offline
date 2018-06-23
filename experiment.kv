@@ -7,44 +7,124 @@ ScreenManager:
 
     WelcomeScreen:
         id: welcome_screen
-        name: 'WelcomeScreen'
+        name: "WelcomeScreen"
         manager: screen_manager
 
     DataScreen:
-        name: 'DataScreen'
+        name: "DataScreen"
         manager: screen_manager
         label_text: welcome_screen.text
+
+    StartScreen:
+        name: "StartScreen"
+        manager: screen_manager
+
+    SocioLingScreen:
+        name: "SocioLingScreen"
+        manager: screen_manager
+
 
 <WelcomeScreen>:
     BoxLayout:
         orientation: "vertical"
 
-        Label:
+        ColoredLabel:
+            height: 60
+            font_size: 25
             text: "Please upload your sentences"
-            font_size: 50
+
+        Image:
+            source: "shiba.jpg"
 
         Button:
             size_hint_y: None
-            height: 100
+            height: 60
             text: "Upload"
-            font_size: 50
+            font_size: 25
             on_release: root.show_load()
-            background_color: (1, 0, 0, 1)
-
+            background_color: (0, 0, 1, 1)
 
 <DataScreen>:
     BoxLayout:
         orientation: "vertical"
 
+        ColoredLabel:
+            text: "Please check file contents before pressing continue"
+
         RstDocument:
             text: root.label_text
+
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint_y: None
+            height: 60
+
+            Button:
+                font_size: 25
+                text: "Go back"
+                on_press: root.manager.current = "WelcomeScreen"
+                background_color: (1, 0, 0, 1)
+
+            Button:
+                font_size: 25
+                text: "Continue"
+                on_press: root.manager.current = "StartScreen"
+                background_color: (0, 1, 0, 1)
+
+<StartScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        Label:
+            color: 0, 0, 0, 1
+            text: "Press start to begin experiment"
+            font_size: 50
 
         Button:
             size_hint_y: None
             height: 100
+            text: "Start"
             font_size: 50
-            text: 'Go back'
-            on_press: root.manager.current = 'WelcomeScreen'
+            on_press: root.manager.current = "SocioLingScreen"
+            background_color: (0, 1, 0, 1)
+
+
+<SocioLingScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        ColoredLabel:
+            text: "Please answer a couple of questions about yourself. It will help us analyse data better."
+
+        Widget:
+            size_hint_y: None
+            height: 50
+
+        GridLayout:
+            cols: 2
+            row_force_default: True
+            row_default_height: 40
+
+            ColoredLabel:
+                color: 0, 0, 0, 1
+                text: 'Hello 1'
+                size_hint_x: None
+                width: 200
+
+            Button:
+                text: 'World 1'
+                on_press: root.add_choice()
+
+            ColoredLabel:
+                color: 0, 0, 0, 1
+                text: 'Hello 2'
+                size_hint_x: None
+                width: 200
+
+            Spinner:
+                text: "Home"
+                values: ('Home', 'Work', 'Other', 'Custom')
+
 
 <LoadDialog>:
     BoxLayout:

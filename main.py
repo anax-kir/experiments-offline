@@ -1,11 +1,13 @@
 from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
-from kivy.properties import ObjectProperty, StringProperty
+from kivy.properties import ObjectProperty, StringProperty, DictProperty
 from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
+from kivy.core.window import Window
 
 import os
+
+import custom_widgets
 
 
 class LoadDialog(FloatLayout):
@@ -39,18 +41,40 @@ class WelcomeScreen(Screen):
         self._popup.open()
 
     def load(self, path, filename):
-        with open(os.path.join(path, filename[0])) as stream:
-            self.text = stream.read()
-            self.manager.current = "DataScreen"
+        try:
+            with open(os.path.join(path, filename[0])) as stream:
+                self.text = stream.read()
+                self.manager.current = "DataScreen"
 
-        self.dismiss_popup()
+            self.dismiss_popup()
+        except IndexError:
+            pass
 
 
 class DataScreen(Screen):
     """
-    Data Screen (temporary): shows uploaded file contents
+    Data Screen: show file contents so user can check that file was parsed correctly
     """
     label_text = StringProperty('')
+
+
+class StartScreen(Screen):
+    """
+    Press "start" to begin actual experiment
+    """
+    pass
+
+
+class SocioLingScreen(Screen):
+    """
+    Sociolinguistic data Screen: ask informants to fill in info about themselves
+    """
+    choices = DictProperty({})
+
+    def add_choice(self):
+        print(self.choices)
+        # self.choices[key] = value
+
 
 
 class ExperimentApp(App):
@@ -59,6 +83,7 @@ class ExperimentApp(App):
     """
     def build(self):
         self.title = 'Experiments: Layer 0'
+        Window.clearcolor = (1, 1, 1, 1)
 
 
 if __name__ == '__main__':
