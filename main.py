@@ -5,6 +5,7 @@ from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
 from kivy.core.window import Window
+from kivy.lang import Builder
 
 from datetime import datetime
 import os
@@ -118,7 +119,11 @@ class SocioLingScreen(Screen):
 
     def save_info(self):
         errors = [key for key in self.data.keys() if key not in self.choices.keys()]
-        exists_name = db_session.query(Participant.id).filter(Participant.name == self.choices["name"]).count()
+        try:
+            exists_name = db_session.query(Participant.id).filter(Participant.name == self.choices["name"]).count()
+        except KeyError:
+            exists_name = False
+
         if not errors and not exists_name:
             participant = Participant(
                                       datetime.now(),
@@ -136,7 +141,7 @@ class SocioLingScreen(Screen):
             db_session.add(participant)
             db_session.commit()
 
-            self.manager.current = "TrainingScreen"
+            self.manager.current = "AttentionScreen"
         else:
             self.errors_text = "[color=ff7400][b][size=25]You filled in the form incorrectly[/size][/b][/color]\n\n"
 
@@ -166,12 +171,30 @@ class SocioLingPopUp(FloatLayout):
     errors_text = StringProperty("")
 
 
+class AttentionScreen(Screen):
+    """
+    A message to participant to start paying attention"
+    """
+    pass
+
+
 class TrainingScreen(Screen):
     """
     Where training sentences are displayed
     """
-    pass
+    instructions = "First, here are some training sentences for you to get familiar with the experiment. \n" \
+                   "For each sentence please determine its acceptability on a scale from 1 to 5"
 
+    def remove_widgets(self, widgets):
+        for widget in widgets:
+            hideable_widget = getattr(self.ids, widget)
+            print(hideable_widget)
+            self.remove_widget(hideable_widget)
+
+    def add_widgets(self, widgets):
+        for widget in widgets:
+            hideable_widget = getattr(self.ids, widget)
+            self.add_widget(hideable_widget)
 
 class ExperimentApp(App):
     """

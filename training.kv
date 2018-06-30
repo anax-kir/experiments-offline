@@ -1,0 +1,52 @@
+<TrainingScreen>:
+    id: training
+    hideable: instruction_box
+
+    BoxLayout:
+        orientation: "vertical"
+        visible: False
+        Widget:
+        Label:
+            id: instructions
+            color: 0, 0, 0, 1
+            text: "Hellooooooo"
+            font_size: 30
+            text_size: self.width, None
+            size_hint: 1, None
+            height: self.texture_size[1]
+            halign: "center"
+
+        Widget:
+        Button:
+            id: instructions_btn
+            size_hint_y: None
+            height: 100
+            text: "Continue"
+            font_size: 50
+            background_color: (1, 0, 0, 1)
+            on_press: training.add_widgets(["instruction_box"])
+
+    BoxLayout:
+        orientation: "vertical"
+        id: instruction_box
+        Widget:
+        Label:
+            id: instructions
+            color: 0, 0, 0, 1
+            text: training.instructions
+            font_size: 30
+            text_size: self.width, None
+            size_hint: 1, None
+            height: self.texture_size[1]
+            halign: "center"
+
+        Widget:
+        Button:
+            id: instructions_btn
+            size_hint_y: None
+            height: 100
+            text: "Continue"
+            font_size: 50
+            background_color: (0, 1, 0, 1)
+            on_press: training.remove_widgets(["instruction_box"])
+

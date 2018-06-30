@@ -1,27 +1,32 @@
 #:kivy 1.10.1
 #:import sm kivy.uix.screenmanager
 #:include socioling.kv
+#:include training.kv
 
 ScreenManager:
     id: screen_manager
     transition: sm.NoTransition()
 
-    WelcomeScreen:
-        id: welcome_screen
-        name: "WelcomeScreen"
-        manager: screen_manager
-
-    DataScreen:
-        name: "DataScreen"
-        manager: screen_manager
-        label_text: welcome_screen.text
-
-    StartScreen:
-        name: "StartScreen"
-        manager: screen_manager
-
+#    WelcomeScreen:
+#        id: welcome_screen
+#        name: "WelcomeScreen"
+#        manager: screen_manager
+#
+#    DataScreen:
+#        name: "DataScreen"
+#        manager: screen_manager
+#        label_text: welcome_screen.text
+#
+#    StartScreen:
+#        name: "StartScreen"
+#        manager: screen_manager
+#
     SocioLingScreen:
         name: "SocioLingScreen"
+        manager: screen_manager
+
+    AttentionScreen:
+        name: "AttentionScreen"
         manager: screen_manager
 
     TrainingScreen:
@@ -90,6 +95,23 @@ ScreenManager:
             text: "Start"
             font_size: 50
             on_press: root.manager.current = "SocioLingScreen"
+            background_color: (0, 1, 0, 1)
+
+<AttentionScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        Label:
+            color: 0, 0, 0, 1
+            text: "You’re about to enter the experiment. \nPlease turn off your cells :)"
+            font_size: 40
+
+        Button:
+            size_hint_y: None
+            height: 100
+            text: "Continue"
+            font_size: 50
+            on_press: root.manager.current = "TrainingScreen"
             background_color: (0, 1, 0, 1)
 
 <LoadDialog>:
