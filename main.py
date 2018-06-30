@@ -6,8 +6,10 @@ from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
 from kivy.core.window import Window
 
+from datetime import datetime
 import os
 
+from results_database import db_session, Participant
 import custom_widgets
 
 
@@ -88,7 +90,7 @@ class SocioLingScreen(Screen):
     languages = ["russian", "ukrainian", "english"]
 
     def add_choice(self, key, value):
-        if value and (len(value) > 1 or type(value) == ObservableList):
+        if value and (len(value) > 2 or type(value) == ObservableList):
             self.choices[key] = value
             print(self.choices)
         else:
@@ -116,13 +118,37 @@ class SocioLingScreen(Screen):
 
     def save_info(self):
         errors = [key for key in self.data.keys() if key not in self.choices.keys()]
-        if not errors:
+        exists_name = db_session.query(Participant.id).filter(Participant.name == self.choices["name"]).count()
+        if not errors and not exists_name:
+            participant = Participant(
+                                      datetime.now(),
+                                      self.choices["name"],
+                                      self.choices["age"],
+                                      self.choices["gender"],
+                                      self.choices["education"],
+                                      self.choices["work_subject"],
+                                      self.choices["birth_city"],
+                                      self.choices["now_city"],
+                                      " ".join(self.choices["mother_tongue"]),
+                                      " ".join(self.choices["other_langs"])
+                                      )
+
+            db_session.add(participant)
+            db_session.commit()
+
             self.manager.current = "TrainingScreen"
         else:
-            human_errors = [self.data[key] for key in errors]
-            error_lines = "> " + "\n> ".join(human_errors) + "\n"
-            self.errors_text = "[color=ff3333][b][size=25]You filled in the form incorrectly[/size][/b][/color]\n\n" \
-                               "[b]Here are the fields you should change:[/b] \n\n" + error_lines
+            self.errors_text = "[color=ff7400][b][size=25]You filled in the form incorrectly[/size][/b][/color]\n\n"
+
+            if errors:
+                human_errors = [self.data[key] for key in errors]
+                error_lines = "> " + "\n> ".join(human_errors) + "\n"
+                self.errors_text += "[b]Here are the fields you should change:[/b] \n\n" + error_lines
+            elif exists_name:
+                error_message = "[b]The name you chose already exists[/b]\n" \
+                                "[b]Please enter a new name[/b]"
+                self.errors_text += error_message
+
             content = SocioLingPopUp(cancel=self.dismiss_popup, errors_text=self.errors_text)
             self.popup = Popup(title="",
                                separator_height=0,
@@ -133,13 +159,16 @@ class SocioLingScreen(Screen):
 
 
 class SocioLingPopUp(FloatLayout):
+    """
+    Displayed if sociolinguistic data input was incorrect
+    """
     cancel = ObjectProperty(None)
     errors_text = StringProperty("")
 
 
 class TrainingScreen(Screen):
     """
-    Where training sentenses are displayed
+    Where training sentences are displayed
     """
     pass
 
