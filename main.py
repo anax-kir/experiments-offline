@@ -69,31 +69,74 @@ class StartScreen(Screen):
     pass
 
 
+class AgreementScreen(Screen):
+    """
+    Ask participant to agree to experiment rules and ask for email (optional field)
+    """
+    agreement = False
+    email = ObjectProperty(None)
+
+    def record_agreement(self, state):
+        if state == "down":
+            self.agreement = True
+        else:
+            self.agreement = False
+
+    def record_email(self, value):
+        if value and "@" in value and "." in value:
+            self.email = value
+            print(self.email)
+        else:
+            if self.email:
+                self.email = None
+                print(self.email)
+
+    def check_agreement(self):
+        if self.agreement:
+            self.manager.current = "SocioLingScreen"
+
+
 class SocioLingScreen(Screen):
     """
     Sociolinguistic data Screen: ask informants to fill in info about themselves
     """
     choices = dict()
+    email = ObjectProperty(None)
+
     data = {
             "name": "Name",
             "age": "Age",
             "education": "Level of education",
-            "work_subject": "Work / Study subject",
-            "birth_city": "City you were born in",
+            "degree_subject": "Your degree subject / specialty",
+            "occupation": "Your current occupation",
+            "childhood_city": "City where you spent your childhood",
+            "longest_time_city": "City where you lived most of your life",
             "now_city": "City you currently live in",
-            "mother_tongue": "Native language",
-            "other_langs": "Other languages you speak"
+            "native_languages": "Native language / languages",
+            "other_languages": "Other languages you speak"
             }
 
     from cities import parse_cities
     cities_list = parse_cities("cities.txt")
 
-    languages = ["russian", "ukrainian", "english"]
+    native_languages = ["russian", "ukrainian", "belarus",
+                        "kazakh", "tatar", "chechen",
+                        "bashkir", "chuvash", "armenian"]
+    native_languages.sort()
+
+    other_languages = ["english", "german",
+                       "spanish","french", "italian",
+                       "chinese", "japanese", "finnish",
+                       "hebrew"]
+
+    all_languages = native_languages + other_languages
+    all_languages.sort()
 
     def add_choice(self, key, value):
         if value and (len(value) > 2 or type(value) == ObservableList):
             self.choices[key] = value
             print(self.choices)
+            print(self.email)
         else:
             if key in self.choices:
                 del self.choices[key]
@@ -131,11 +174,14 @@ class SocioLingScreen(Screen):
                                       self.choices["age"],
                                       self.choices["gender"],
                                       self.choices["education"],
-                                      self.choices["work_subject"],
-                                      self.choices["birth_city"],
+                                      self.choices["degree_subject"],
+                                      self.choices["occupation"],
+                                      self.choices["childhood_city"],
+                                      self.choices["longest_time_city"],
                                       self.choices["now_city"],
-                                      " ".join(self.choices["mother_tongue"]),
-                                      " ".join(self.choices["other_langs"])
+                                      ", ".join(self.choices["native_languages"]),
+                                      ", ".join(self.choices["other_languages"]),
+                                      self.email
                                       )
 
             db_session.add(participant)
