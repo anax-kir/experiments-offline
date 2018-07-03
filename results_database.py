@@ -50,5 +50,21 @@ class Participant(Base):
         return '<Participant {} ({}, from {})>'.format(self.name, self.age, self.now_city)
 
 
+class TrainingResult(Base):
+    __tablename__ = "training"
+    id = Column(Integer, primary_key=True)
+    sentence = Column(Text)
+    score = Column(Integer)
+    participant_id = Column(Integer, ForeignKey('participants.id'))
+
+    def __init__(self,
+                 sentence=None,
+                 score=None,
+                 participant_id=None):
+        self.sentence = sentence
+        self.score= score
+        self.participant_id = participant_id
+
+
 if __name__ == "__main__":
     Base.metadata.create_all(bind=engine)

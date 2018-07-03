@@ -10,7 +10,7 @@ from kivy.core.window import Window
 from datetime import datetime
 import os
 
-from results_database import db_session, Participant
+from results_database import db_session, Participant, TrainingResult
 import custom_widgets
 
 
@@ -73,7 +73,7 @@ class SocioLingScreen(Screen):
     """
     Sociolinguistic data Screen: ask informants to fill in info about themselves
     """
-    choices = DictProperty({})
+    choices = dict()
     data = {
             "name": "Name",
             "age": "Age",
@@ -191,8 +191,11 @@ class TrainingScreen(Screen):
                         {"test": "Who wonders whether Paul took the necklace?"}
                      ]
 
-    # предлагаю сначала рандомно отсортировать список, а потом выдавать по порядку (сколько тестовых нужно?)
-    current_sentence = 0
+    # предлагаю сначала рандомно отсортировать список, а потом выдавать по порядку
+    # (пока рандома нет, сколько тестовых нужно?)
+
+    current_sentence = 1
+    sentences_quantity = 3
 
     scores = DictProperty({})
 
@@ -218,11 +221,11 @@ class TrainingScreen(Screen):
     def record_result(self):
         sent_key = str(self.current_sentence)
         if sent_key in self.scores:
-            if self.current_sentence < 2:
+            if self.current_sentence < self.sentences_quantity:
                 box = getattr(self.ids, "sentence_box")
                 for child in box.children:
                     try:
-                        if child.text == self.test_sentences[self.current_sentence]["test"]:
+                        if child.text == self.test_sentences[self.current_sentence-1]["test"]:
                             box.remove_widget(child)
                     except:
                         try:
@@ -235,7 +238,20 @@ class TrainingScreen(Screen):
                 self.current_sentence += 1
                 self.display_sentence()
             else:
-                print("Sentences over")
+                self.save_scores()
+                self.manager.current = "ExperimentScreen"
+
+    def save_scores(self):
+        name = SocioLingScreen.choices["name"]
+        participant = Participant.query.filter(Participant.name == name).first()
+        for index in range(len(self.test_sentences)):
+            result = TrainingResult(
+                                    self.test_sentences[index]["test"],
+                                    self.scores[str(index+1)],
+                                    participant.id
+                                   )
+            db_session.add(result)
+        db_session.commit()
 
     def display_sentence(self):
         box = getattr(self.ids, "sentence_box")
@@ -244,10 +260,14 @@ class TrainingScreen(Screen):
         box.clear_widgets()
         box.add_widget(saved[0])
         saved = saved[1:]
-        sent = Label(text=self.test_sentences[self.current_sentence]["test"], font_size="30", color=(0, 0, 0, 1))
+        sent = Label(text=self.test_sentences[self.current_sentence-1]["test"], font_size="30", color=(0, 0, 0, 1))
         box.add_widget(sent)
         for widget in saved:
             box.add_widget(widget)
+
+
+class ExperimentScreen(Screen):
+    pass
 
 
 class ExperimentApp(App):

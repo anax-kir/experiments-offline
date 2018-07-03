@@ -2,6 +2,7 @@
 #:import sm kivy.uix.screenmanager
 #:include socioling.kv
 #:include training.kv
+#:include actual_experiment.kv
 
 ScreenManager:
     id: screen_manager
@@ -21,16 +22,20 @@ ScreenManager:
 #        name: "StartScreen"
 #        manager: screen_manager
 #
-#    SocioLingScreen:
-#        name: "SocioLingScreen"
-##        manager: screen_manager
-#
-#    AttentionScreen:
-#        name: "AttentionScreen"
-#        manager: screen_manager
+    SocioLingScreen:
+        name: "SocioLingScreen"
+        manager: screen_manager
+
+    AttentionScreen:
+        name: "AttentionScreen"
+        manager: screen_manager
 
     TrainingScreen:
         name: "TrainingScreen"
+        manager: screen_manager
+
+    ExperimentScreen:
+        name: "ExperimentScreen"
         manager: screen_manager
 
 <WelcomeScreen>:
