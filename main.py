@@ -2,10 +2,10 @@ from kivy.app import App
 from kivy.properties import ObjectProperty, StringProperty, DictProperty, ObservableList
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
+from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
 from kivy.core.window import Window
-from kivy.lang import Builder
 
 from datetime import datetime
 import os
@@ -185,16 +185,70 @@ class TrainingScreen(Screen):
     instructions = "First, here are some training sentences for you to get familiar with the experiment. \n" \
                    "For each sentence please determine its acceptability on a scale from 1 to 5"
 
+    test_sentences = [
+                        {"test": "Who thinks that Paul took the necklace?"},
+                        {"test": "What does the detective think that Paul took?"},
+                        {"test": "Who wonders whether Paul took the necklace?"}
+                     ]
+
+    # предлагаю сначала рандомно отсортировать список, а потом выдавать по порядку (сколько тестовых нужно?)
+    current_sentence = 0
+
+    scores = DictProperty({})
+
     def remove_widgets(self, widgets):
         for widget in widgets:
             hideable_widget = getattr(self.ids, widget)
-            print(hideable_widget)
             self.remove_widget(hideable_widget)
 
     def add_widgets(self, widgets):
         for widget in widgets:
             hideable_widget = getattr(self.ids, widget)
             self.add_widget(hideable_widget)
+
+    def record_active_state(self, state, text):
+        sent_key = str(self.current_sentence)
+        if state == "down":
+            self.scores[sent_key] = int(text)
+        else:
+            if sent_key in self.scores:
+                del self.scores[sent_key]
+        print(self.scores)
+
+    def record_result(self):
+        sent_key = str(self.current_sentence)
+        if sent_key in self.scores:
+            if self.current_sentence < 2:
+                box = getattr(self.ids, "sentence_box")
+                for child in box.children:
+                    try:
+                        if child.text == self.test_sentences[self.current_sentence]["test"]:
+                            box.remove_widget(child)
+                    except:
+                        try:
+                            for btn in child.children:
+                                if btn.state == "down":
+                                    btn.state = "normal"
+                        except:
+                            pass
+
+                self.current_sentence += 1
+                self.display_sentence()
+            else:
+                print("Sentences over")
+
+    def display_sentence(self):
+        box = getattr(self.ids, "sentence_box")
+        saved = box.children[:]
+        saved.reverse()
+        box.clear_widgets()
+        box.add_widget(saved[0])
+        saved = saved[1:]
+        sent = Label(text=self.test_sentences[self.current_sentence]["test"], font_size="30", color=(0, 0, 0, 1))
+        box.add_widget(sent)
+        for widget in saved:
+            box.add_widget(widget)
+
 
 class ExperimentApp(App):
     """

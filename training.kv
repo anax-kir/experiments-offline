@@ -1,37 +1,73 @@
 <TrainingScreen>:
     id: training
-    hideable: instruction_box
 
     BoxLayout:
+        id: sentence_box
         orientation: "vertical"
-        visible: False
-        Widget:
-        Label:
-            id: instructions
-            color: 0, 0, 0, 1
-            text: "Hellooooooo"
-            font_size: 30
+
+        ColoredLabel:
+            text: "Please rate the correctness of the following sentence on a scale from 1 (ungrammatical) to 5 (perfectly grammatical)"
             text_size: self.width, None
+            font_size: 25
             size_hint: 1, None
-            height: self.texture_size[1]
+            height: self.texture_size[1] + 15
             halign: "center"
 
-        Widget:
+        GridLayout:
+            cols: 5
+            row_force_default: True
+            row_default_height: 40
+
+            ToggleButton:
+                background_color: 0.608, 0.608, 0.627, 0.5
+                text: "1"
+                group: "score"
+                on_press: root.record_active_state(self.state, self.text)
+
+            ToggleButton:
+                background_color: 0.608, 0.608, 0.627, 0.5
+                text: "2"
+                group: "score"
+                on_press: root.record_active_state(self.state, self.text)
+
+            ToggleButton:
+                background_color: 0.608, 0.608, 0.627, 0.5
+                text: "3"
+                group: "score"
+                on_press: root.record_active_state(self.state, self.text)
+
+            ToggleButton:
+                background_color: 0.608, 0.608, 0.627, 0.5
+                text: "4"
+                group: "score"
+                on_press: root.record_active_state(self.state, self.text)
+
+            ToggleButton:
+                background_color: 0.608, 0.608, 0.627, 0.5
+                text: "5"
+                group: "score"
+                on_press: root.record_active_state(self.state, self.text)
+
         Button:
-            id: instructions_btn
             size_hint_y: None
-            height: 100
             text: "Continue"
-            font_size: 50
-            background_color: (1, 0, 0, 1)
-            on_press: training.add_widgets(["instruction_box"])
+            height: 40
+            font_size: 25
+            background_color: (0.608, 0.608, 0.627, 0.5)
+            on_press: root.record_result()
+
 
     BoxLayout:
-        orientation: "vertical"
         id: instruction_box
+        orientation: "vertical"
+        canvas.before:
+            Color:
+                rgba: (1, 1, 1, 1)
+            Rectangle:
+                pos: self.pos
+                size: self.size
         Widget:
         Label:
-            id: instructions
             color: 0, 0, 0, 1
             text: training.instructions
             font_size: 30
@@ -42,11 +78,12 @@
 
         Widget:
         Button:
-            id: instructions_btn
             size_hint_y: None
             height: 100
             text: "Continue"
             font_size: 50
             background_color: (0, 1, 0, 1)
-            on_press: training.remove_widgets(["instruction_box"])
+            on_press:
+                training.remove_widgets(["instruction_box"])
+                training.display_sentence()
 
