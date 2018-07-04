@@ -13,40 +13,39 @@
             height: self.texture_size[1] + 15
             halign: "center"
 
+        RelativeLayout:
+            id: progress_bar
+            size_hint: (None, None)
+            height: 75
+            width: root.width * 0.2
+            pos_hint: {'center_x': 1}
+
         GridLayout:
             cols: 5
             row_force_default: True
             row_default_height: 40
 
-            ToggleButton:
-                background_color: 0.608, 0.608, 0.627, 0.5
+            RatingButton:
                 text: "1"
-                group: "score"
                 on_press: root.record_active_state(self.state, self.text)
 
-            ToggleButton:
-                background_color: 0.608, 0.608, 0.627, 0.5
+            RatingButton:
                 text: "2"
-                group: "score"
                 on_press: root.record_active_state(self.state, self.text)
 
-            ToggleButton:
-                background_color: 0.608, 0.608, 0.627, 0.5
+            RatingButton:
                 text: "3"
-                group: "score"
                 on_press: root.record_active_state(self.state, self.text)
 
-            ToggleButton:
-                background_color: 0.608, 0.608, 0.627, 0.5
+            RatingButton:
                 text: "4"
-                group: "score"
                 on_press: root.record_active_state(self.state, self.text)
 
-            ToggleButton:
-                background_color: 0.608, 0.608, 0.627, 0.5
+            RatingButton:
                 text: "5"
-                group: "score"
                 on_press: root.record_active_state(self.state, self.text)
+
+        Widget:
 
         Button:
             size_hint_y: None

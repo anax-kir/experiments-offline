@@ -8,19 +8,19 @@ ScreenManager:
     id: screen_manager
     transition: sm.NoTransition()
 
-    WelcomeScreen:
-        id: welcome_screen
-        name: "WelcomeScreen"
-        manager: screen_manager
-
-    DataScreen:
-        name: "DataScreen"
-        manager: screen_manager
-        label_text: welcome_screen.text
-
-    StartScreen:
-        name: "StartScreen"
-        manager: screen_manager
+#    WelcomeScreen:
+#        id: welcome_screen
+#        name: "WelcomeScreen"
+#        manager: screen_manager
+#
+#    DataScreen:
+#        name: "DataScreen"
+#        manager: screen_manager
+#        label_text: welcome_screen.text
+#
+#    StartScreen:
+#        name: "StartScreen"
+#        manager: screen_manager
 
     AgreementScreen:
         id: agreement_screen
@@ -114,7 +114,7 @@ ScreenManager:
 
         Label:
             color: 0, 0, 0, 1
-            text: "You’re about to enter the experiment. \nPlease turn off your cells :)"
+            text: "You’re about to enter the experiment. \nPlease turn off your cell phone :)"
             font_size: 40
 
         Button:

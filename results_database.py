@@ -64,14 +64,17 @@ class TrainingResult(Base):
     id = Column(Integer, primary_key=True)
     sentence = Column(Text)
     rating = Column(Integer)
+    time = Column(String)
     participant_id = Column(Integer, ForeignKey('participants.id'))
 
     def __init__(self,
                  sentence=None,
                  rating=None,
+                 time=None,
                  participant_id=None):
         self.sentence = sentence
         self.rating = rating
+        self.time = time
         self.participant_id = participant_id
 
 

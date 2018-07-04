@@ -1,10 +1,14 @@
 from kivy.uix.label import Label
+from kivy.uix.togglebutton import ToggleButton
 from kivy.properties import ListProperty, ObjectProperty, StringProperty
 from kivy.uix.textinput import TextInput
 from kivy.uix.dropdown import DropDown
 from kivy.uix.button import Button
 from kivy.factory import Factory
 from kivy.lang import Builder
+from kivy.uix.progressbar import ProgressBar
+from kivy.core.text import Label as CoreLabel
+from kivy.graphics import Color, Ellipse, Rectangle
 
 from main import SocioLingScreen
 
@@ -54,6 +58,17 @@ Builder.load_string("""
     font_size: 20
     background_color: 0.608, 0.608, 0.627, 0.2
     text: "choose 1 or more"
+
+<RatingButton>:
+    background_color: 0.608, 0.608, 0.627, 0.5
+    font_size: 20
+    group: "score"
+    
+<CircularProgressBar>:
+    size_hint: (None, None)
+    height: 70
+    width: 70
+    max: 100
 """)
 
 
@@ -70,6 +85,10 @@ class GrayListLabel(ColoredLabel):
 
 
 class WhiteListLabel(ColoredLabel):
+    pass
+
+
+class RatingButton(ToggleButton):
     pass
 
 
@@ -190,8 +209,45 @@ class MultiSelectSpinner(Button):
             self.text = "choose 1 or more"
 
 
-Factory.register('CustomKivy', module='ColoredLabel')
-Factory.register('CustomKivy', module='GrayListLabel')
-Factory.register('CustomKivy', module='WhiteListLabel')
-Factory.register('CustomKivy', module='ComboEdit')
-Factory.register('CustomKivy', module='MultiSelectSpinner')
+class CircularProgressBar(ProgressBar):
+    """
+    source: https://stackoverflow.com/questions/50543028/how-to-make-circular-progress-bar-in-kivy
+    """
+
+    def __init__(self, **kwargs):
+        super(CircularProgressBar, self).__init__(**kwargs)
+        self.thickness = 25
+        self.label = CoreLabel(text="0%", font_size=self.thickness-5)
+        self.texture_size = None
+        self.refresh_text()
+
+    def draw(self):
+        with self.canvas:
+            self.canvas.clear()
+            Color(0.608, 0.608, 0.627, 1)
+            # label = self.parent.children[1]
+            # y = label.pos[1] + label.height + 15
+            # self.pos = [100, 100]
+            # print(self.pos)
+            # print(self.size)
+            # print(self.parent.pos)
+            Ellipse(pos=self.pos, size=self.size)
+            Color(1, 0.49, 0.25, 1)
+            Ellipse(pos=self.pos, size=self.size,
+                    angle_end=(0.001 if self.value_normalized == 0 else self.value_normalized*360))
+            Color(1, 1, 1)
+            Ellipse(pos=(self.pos[0] + self.thickness / 2, self.pos[1] + self.thickness / 2),
+                    size=(self.size[0] - self.thickness, self.size[1] - self.thickness))
+            Color(0, 0, 0, 1)
+            Rectangle(texture=self.label.texture, size=self.texture_size,
+                      pos=(self.size[0]/2 - self.texture_size[0]/2, self.size[1]/2 - self.texture_size[1]/2))
+
+    def refresh_text(self):
+        self.label.refresh()
+        self.texture_size = list(self.label.texture.size)
+
+    def set_value(self, value):
+        self.value = value
+        self.label.text = str(int(self.value_normalized*100)) + "%"
+        self.refresh_text()
+

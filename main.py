@@ -1,9 +1,11 @@
 from kivy.app import App
 from kivy.properties import ObjectProperty, StringProperty, DictProperty, ObservableList
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
+from kivy.uix.widget import Widget
 from kivy.uix.screenmanager import Screen
 from kivy.core.window import Window
 
@@ -228,7 +230,7 @@ class TrainingScreen(Screen):
     """
     Where training sentences are displayed
     """
-    instructions = "First, here are some training sentences for you to get familiar with the experiment. \n" \
+    instructions = "First, here are some training sentences for you to get familiar with the experiment. \n\n" \
                    "For each sentence please determine its acceptability on a scale from 1 to 5"
 
     test_sentences = [
@@ -243,7 +245,7 @@ class TrainingScreen(Screen):
     current_sentence = 1
     sentences_quantity = 3
 
-    scores = DictProperty({})
+    scores = dict()
 
     def remove_widgets(self, widgets):
         for widget in widgets:
@@ -258,28 +260,31 @@ class TrainingScreen(Screen):
     def record_active_state(self, state, text):
         sent_key = str(self.current_sentence)
         if state == "down":
-            self.scores[sent_key] = int(text)
+            self.scores[sent_key] = [int(text)]
         else:
             if sent_key in self.scores:
                 del self.scores[sent_key]
-        print(self.scores)
 
     def record_result(self):
         sent_key = str(self.current_sentence)
         if sent_key in self.scores:
+            # stop timing
+            self.time_end = datetime.now()
+            delta = str(self.time_end - self.time_start).split('.', 2)[0]
+            self.scores[sent_key].append(delta)
+            print(self.scores)
+
             if self.current_sentence < self.sentences_quantity:
                 box = getattr(self.ids, "sentence_box")
                 for child in box.children:
-                    try:
-                        if child.text == self.test_sentences[self.current_sentence-1]["test"]:
-                            box.remove_widget(child)
-                    except:
-                        try:
-                            for btn in child.children:
-                                if btn.state == "down":
-                                    btn.state = "normal"
-                        except:
-                            pass
+                    text = getattr(child, "text", "")
+                    if text == self.test_sentences[self.current_sentence-1]["test"]:
+                        box.remove_widget(child)
+
+                    for btn in child.children:
+                        state = getattr(btn, "state", "")
+                        if state == "down":
+                            btn.state = "normal"
 
                 self.current_sentence += 1
                 self.display_sentence()
@@ -291,9 +296,11 @@ class TrainingScreen(Screen):
         name = SocioLingScreen.choices["name"]
         participant = Participant.query.filter(Participant.name == name).first()
         for index in range(len(self.test_sentences)):
+            rating, time = self.scores[str(index+1)]
             result = TrainingResult(
                                     self.test_sentences[index]["test"],
-                                    self.scores[str(index+1)],
+                                    rating,
+                                    time,
                                     participant.id
                                    )
             db_session.add(result)
@@ -301,15 +308,26 @@ class TrainingScreen(Screen):
 
     def display_sentence(self):
         box = getattr(self.ids, "sentence_box")
+        rel = getattr(self.ids, "progress_bar")
+        pb = custom_widgets.CircularProgressBar()
+        pb.set_value((100 * (self.current_sentence-1)) / len(self.test_sentences))
         saved = box.children[:]
+        saved.remove(rel)
         saved.reverse()
         box.clear_widgets()
         box.add_widget(saved[0])
+
+        rel.add_widget(pb)
+        pb.draw()
+        box.add_widget(rel)
+
         saved = saved[1:]
         sent = Label(text=self.test_sentences[self.current_sentence-1]["test"], font_size="30", color=(0, 0, 0, 1))
         box.add_widget(sent)
         for widget in saved:
             box.add_widget(widget)
+        # all widgets displayed:
+        self.time_start = datetime.now()
 
 
 class ExperimentScreen(Screen):
