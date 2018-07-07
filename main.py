@@ -1,11 +1,9 @@
 from kivy.app import App
 from kivy.properties import ObjectProperty, StringProperty, DictProperty, ObservableList
 from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
-from kivy.uix.widget import Widget
 from kivy.uix.screenmanager import Screen
 from kivy.core.window import Window
 
@@ -270,7 +268,7 @@ class TrainingScreen(Screen):
         if sent_key in self.scores:
             # stop timing
             self.time_end = datetime.now()
-            delta = str(self.time_end - self.time_start).split('.', 2)[0]
+            delta = str(self.time_end - self.time_start)
             self.scores[sent_key].append(delta)
             print(self.scores)
 
