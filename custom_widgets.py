@@ -10,7 +10,7 @@ from kivy.uix.progressbar import ProgressBar
 from kivy.core.text import Label as CoreLabel
 from kivy.graphics import Color, Ellipse, Rectangle
 
-from main import SocioLingScreen
+from socioling_screen import SocioLingScreen
 
 Builder.load_string("""
 #:import Button kivy.uix.button.Button
