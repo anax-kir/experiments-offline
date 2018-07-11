@@ -212,5 +212,16 @@ class SelfPacedDesign:
             db_session.add(result)
         db_session.commit()
 
-
-
+    def save_sent_results(self):
+        name = SocioLingScreen.choices["name"]
+        participant = Participant.query.filter(Participant.name == name).first()
+        sentence_id = self.current_sentence
+        for word, time_code in zip(self.full_text, self.time_codes):
+            result = SelfPacedTrainingSentences(
+                sentence_id,
+                word,
+                time_code,
+                participant.id
+                )
+            db_session.add(result)
+        db_session.commit()
