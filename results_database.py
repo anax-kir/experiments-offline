@@ -18,11 +18,14 @@ class Participant(Base):
     age = Column(String(20))
     gender = Column(String(30))
     education = Column(String(70))
-    work_subject = Column(String(200))
-    birth_city = Column(String(100))
-    now_city = Column(String(100))
-    mother_tongue = Column(String(200))
-    other_langs = Column(String(200))
+    degree_subject = Column(String(200))
+    occupation = Column(String(200))
+    childhood_city = Column(String(200))
+    longest_time_city = Column(String(200))
+    now_city = Column(String(200))
+    native_languages = Column(Text)
+    other_languages = Column(Text)
+    email = Column(String(200))
 
     def __init__(self,
                  date=None,
@@ -30,24 +33,49 @@ class Participant(Base):
                  age=None,
                  gender=None,
                  education=None,
-                 work_subject=None,
-                 birth_city=None,
+                 degree_subject=None,
+                 occupation=None,
+                 childhood_city=None,
+                 longest_time_city=None,
                  now_city=None,
-                 mother_tongue=None,
-                 other_langs=None):
+                 native_languages=None,
+                 other_languages=None,
+                 email=None):
         self.date = date
         self.name = name
         self.age = age
         self.gender = gender
         self.education = education
-        self.work_subject = work_subject
-        self.birth_city = birth_city
+        self.degree_subject = degree_subject
+        self.occupation = occupation
+        self.childhood_city = childhood_city
+        self.longest_time_city = longest_time_city
         self.now_city = now_city
-        self.mother_tongue = mother_tongue
-        self.other_langs = other_langs
+        self.native_languages = native_languages
+        self.other_languages = other_languages
+        self.email = email
 
     def __repr__(self):
         return '<Participant {} ({}, from {})>'.format(self.name, self.age, self.now_city)
+
+
+class TrainingResult(Base):
+    __tablename__ = "training"
+    id = Column(Integer, primary_key=True)
+    sentence = Column(Text)
+    rating = Column(Integer)
+    time = Column(String)
+    participant_id = Column(Integer, ForeignKey('participants.id'))
+
+    def __init__(self,
+                 sentence=None,
+                 rating=None,
+                 time=None,
+                 participant_id=None):
+        self.sentence = sentence
+        self.rating = rating
+        self.time = time
+        self.participant_id = participant_id
 
 
 if __name__ == "__main__":

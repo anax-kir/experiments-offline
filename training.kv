@@ -1,0 +1,59 @@
+<TrainingScreen>:
+    BoxLayout:
+        id: instruction_box
+        orientation: "vertical"
+        canvas.before:
+            Color:
+                rgba: (1, 1, 1, 1)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Widget:
+        Label:
+            id: instructions_label
+            color: 0, 0, 0, 1
+            font_size: 30
+            markup: True
+            text_size: self.width, None
+            size_hint: 1, None
+            height: self.texture_size[1]
+            halign: "center"
+
+        Widget:
+        Button:
+            size_hint_y: None
+            height: 100
+            text: "Continue"
+            font_size: 50
+            background_color: (0, 1, 0, 1)
+            on_press:
+                root.remove_widgets(["instruction_box"])
+                root.experiment_design.display_sentence()
+
+
+    BoxLayout:
+        id: attention_box
+        orientation: "vertical"
+        canvas.before:
+            Color:
+                rgba: (1, 1, 1, 1)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            color: 0, 0, 0, 1
+            text: "You’re about to enter the experiment. \nPlease turn off your cell phone :)"
+            font_size: 40
+
+        Button:
+            size_hint_y: None
+            height: 100
+            text: "Continue"
+            font_size: 50
+            background_color: (0, 1, 0, 1)
+            on_press:
+                root.remove_widgets(["attention_box"])
+                root.load_experiment()
+
+

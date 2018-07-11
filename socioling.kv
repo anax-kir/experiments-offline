@@ -7,19 +7,15 @@
 
         Widget:
             size_hint_y: None
-            height: 50
+            height: 20
 
         GridLayout:
             cols: 2
             row_force_default: True
             row_default_height: 40
 
-            ColoredLabel:
+            GrayListLabel:
                 text: "Enter your name or choose a nickname"
-                background_color: 0.95, 0.95, 0.95, 1
-                color: 0, 0, 0, 1
-                size_hint_x: None
-                width: 400
 
             TextInput:
                 font_size: 20
@@ -28,12 +24,8 @@
                 on_text: root.add_choice("name", self.text)
                 background_color: 0.608, 0.608, 0.627, 0.1
 
-            ColoredLabel:
+            WhiteListLabel:
                 text: "Choose your age range"
-                size_hint_x: None
-                width: 400
-                background_color: 1, 1, 1, 1
-                color: 0, 0, 0, 1
 
             Spinner:
                 text: "choose range"
@@ -43,13 +35,10 @@
                 values: ("18–24", "25–29", "30–39", "40–49", "50–59", "60+")
                 on_text: root.add_choice("age", self.text)
 
-            ColoredLabel:
+            GrayListLabel:
                 text: "Choose your gender"
-                size_hint: (None, None)
-                width: 400
+                size_hint_y: None
                 height: 40
-                background_color: 0.95, 0.95, 0.95, 1
-                color: 0, 0, 0, 1
 
             GridLayout:
                 cols: 3
@@ -96,12 +85,8 @@
 
             Widget:
 
-            ColoredLabel:
+            GrayListLabel:
                 text: "What is your level of education?"
-                size_hint_x: None
-                width: 400
-                background_color: 0.95, 0.95, 0.95, 1
-                color: 0, 0, 0, 1
 
             Spinner:
                 text: "choose level"
@@ -111,12 +96,8 @@
                 values: ("школа", "бакалавриат", "специалитет", "магистратура", "аспирантура", "докторантура")
                 on_text: root.add_choice("education", self.text)
 
-            ColoredLabel:
-                text: "What is your degree / work subject?"
-                size_hint_x: None
-                width: 400
-                background_color: 1, 1, 1, 1
-                color: 0, 0, 0, 1
+            WhiteListLabel:
+                text: "What is or was your specialty?"
 
             TextInput:
                 text: ''
@@ -124,73 +105,58 @@
                 background_color: 0.608, 0.608, 0.627, 0.1
                 color: 0, 0, 0, 1
                 multiline: False
-                on_text: root.add_choice("work_subject", self.text)
+                on_text: root.add_choice("degree_subject", self.text)
 
-            ColoredLabel:
-                text: "What city were you born in?"
-                size_hint_x: None
-                width: 400
-                background_color: 0.95, 0.95, 0.95, 1
+            GrayListLabel:
+                text: "What is your current occupation?"
+
+            TextInput:
+                text: ''
+                font_size: 20
+                background_color: 0.608, 0.608, 0.627, 0.1
                 color: 0, 0, 0, 1
+                multiline: False
+                on_text: root.add_choice("occupation", self.text)
+
+            WhiteListLabel:
+                text: "Where did you live during childhood?"
 
             ComboEdit:
-                font_size: 20
-                multiline: False
-                background_color: 0.608, 0.608, 0.627, 0.1
-                text: "start typing to see suggestions"
-                foreground_color: 0.608, 0.608, 0.627, 1
-                options: ""
                 on_text:
                     root.suggest_cities(self)
-                    root.add_city("birth_city", self.text)
+                    root.add_city("childhood_city", self.text)
 
-            ColoredLabel:
-                text: "What city do you live in now?"
-                size_hint_x: None
-                width: 400
-                background_color: 1, 1, 1, 1
-                color: 0, 0, 0, 1
+            GrayListLabel:
+                text: "Where did you live most of your life?"
 
             ComboEdit:
-                font_size: 20
-                multiline: False
-                background_color: 0.608, 0.608, 0.627, 0.1
-                foreground_color: 0.608, 0.608, 0.627, 1
-                text: "start typing to see suggestions"
-                options: ""
+                on_text:
+                    root.suggest_cities(self)
+                    root.add_city("longest_time_city", self.text)
+
+            WhiteListLabel:
+                text: "Where do you live now?"
+
+            ComboEdit:
                 on_text:
                     root.suggest_cities(self)
                     root.add_city("now_city", self.text)
 
-            ColoredLabel:
+            GrayListLabel:
                 text: "What is your native language / languages?"
-                size_hint_x: None
-                width: 400
-                background_color: 0.95, 0.95, 0.95, 1
-                color: 0, 0, 0, 1
 
             MultiSelectSpinner:
-                color: 0, 0, 0, 1
-                font_size: 20
-                background_color: 0.608, 0.608, 0.627, 0.2
-                text: "choose 1 or more"
-                values: root.languages
-                on_text: root.add_choice("mother_tongue", self.selected_values)
+                values: root.native_languages
+                check_type: "other_languages"
+                on_text: root.add_choice("native_languages", self.selected_values)
 
-            ColoredLabel:
+            WhiteListLabel:
                 text: "What other languages do you speak?"
-                size_hint_x: None
-                width: 400
-                background_color: 1, 1, 1, 1
-                color: 0, 0, 0, 1
 
             MultiSelectSpinner:
-                color: 0, 0, 0, 1
-                font_size: 20
-                background_color: 0.608, 0.608, 0.627, 0.2
-                text: "choose 1 or more"
-                values: root.languages
-                on_text: root.add_choice("other_langs", self.selected_values)
+                values: root.all_languages
+                check_type: "native_languages"
+                on_text: root.add_choice("other_languages", self.selected_values)
 
         Button:
             text: "Continue"
@@ -209,9 +175,6 @@
         orientation: "vertical"
 
         Label:
-#            size_hint_y: None
-#            text_size: self.width, self.height
-#            height: self.texture_size[1]
             font_size: 20
             text: root.errors_text
             markup: True
@@ -222,3 +185,104 @@
             font_size: 20
             text: "Got it"
             on_release: root.cancel()
+
+<AgreementScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        ColoredLabel:
+            text: "Participation Agreement"
+            font_size: 40
+            height: 50
+
+        GrayListLabel:
+            text: "[b]I am aware that:[/b]"
+            font_size: 25
+            markup: True
+            size_hint_x: 1
+
+        Widget:
+            size_hint_y: None
+            height: 15
+
+        GrayListLabel:
+            text: "All information or data which is obtained will not be made public"
+            size_hint_x: 1
+            height: 30
+
+        GrayListLabel:
+            text: "and will only be used for scientific purposes"
+            size_hint_x: 1
+            height: 30
+
+        Widget:
+            size_hint_y: None
+            height: 15
+
+        GrayListLabel:
+            text: "Any data which can be identified with me will be treated confidentially"
+            size_hint_x: 1
+            height: 60
+
+        Widget:
+            size_hint_y: None
+            height: 15
+
+        GrayListLabel:
+            text: "This experiment will only take about 15 minutes of my time"
+            size_hint_x: 1
+            height: 60
+
+        Widget:
+            size_hint_y: None
+            height: 15
+
+        GrayListLabel:
+            text: "[b]I agree[/b]"
+            markup: True
+            font_size: 25
+            size_hint_x: 1
+            height: 40
+
+        CheckBox:
+            canvas.before:
+                Color:
+                    rgba: 0.95, 0.95, 0.95, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            size_hint_y: None
+            height: '45dp'
+            color: 0, 0, 0, 1
+            on_active: root.record_agreement(self.state)
+
+        Widget:
+            size_hint_y: None
+            height: 20
+
+        ColoredLabel:
+            text: "If you want to find out the results of the experiment, \nyou can leave us your email address:"
+            height: 60
+            font_size: 22
+
+        TextInput:
+            text: ''
+            font_size: 20
+            size_hint_y: None
+            size_hint_x: 0.7
+            pos_hint: {'center_x': 0.5}
+            height: 40
+            background_color: 0.608, 0.608, 0.627, 0.1
+            color: 0, 0, 0, 1
+            multiline: False
+            on_text: root.record_email(self.text)
+
+        Widget:
+
+        Button:
+            text: "Continue"
+            size_hint_y: None
+            height: 40
+            font_size: 25
+            background_color: 0.608, 0.608, 0.627, 0.5
+            on_press: root.check_agreement()

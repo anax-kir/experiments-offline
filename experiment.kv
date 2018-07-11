@@ -1,6 +1,8 @@
 #:kivy 1.10.1
 #:import sm kivy.uix.screenmanager
 #:include socioling.kv
+#:include training.kv
+#:include actual_experiment.kv
 
 ScreenManager:
     id: screen_manager
@@ -20,12 +22,22 @@ ScreenManager:
         name: "StartScreen"
         manager: screen_manager
 
+    AgreementScreen:
+        id: agreement_screen
+        name: "AgreementScreen"
+        manager: screen_manager
+
     SocioLingScreen:
         name: "SocioLingScreen"
         manager: screen_manager
+        email: agreement_screen.email
 
     TrainingScreen:
         name: "TrainingScreen"
+        manager: screen_manager
+
+    ExperimentScreen:
+        name: "ExperimentScreen"
         manager: screen_manager
 
 <WelcomeScreen>:
@@ -89,7 +101,7 @@ ScreenManager:
             height: 100
             text: "Start"
             font_size: 50
-            on_press: root.manager.current = "SocioLingScreen"
+            on_press: root.manager.current = "AgreementScreen"
             background_color: (0, 1, 0, 1)
 
 <LoadDialog>:

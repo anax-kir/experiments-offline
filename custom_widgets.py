@@ -1,10 +1,16 @@
 from kivy.uix.label import Label
-from kivy.properties import ListProperty, ObjectProperty
+from kivy.uix.togglebutton import ToggleButton
+from kivy.properties import ListProperty, ObjectProperty, StringProperty
 from kivy.uix.textinput import TextInput
 from kivy.uix.dropdown import DropDown
 from kivy.uix.button import Button
 from kivy.factory import Factory
 from kivy.lang import Builder
+from kivy.uix.progressbar import ProgressBar
+from kivy.core.text import Label as CoreLabel
+from kivy.graphics import Color, Ellipse, Rectangle
+
+from socioling_screen import SocioLingScreen
 
 Builder.load_string("""
 #:import Button kivy.uix.button.Button
@@ -20,15 +26,49 @@ Builder.load_string("""
         Rectangle:
             pos: self.pos
             size: self.size
-            
+
+<GrayListLabel>:
+    background_color: 0.95, 0.95, 0.95, 1
+    color: 0, 0, 0, 1
+    size_hint_x: None
+    width: 400
+
+<WhiteListLabel>:
+    background_color: 1, 1, 1, 1
+    color: 0, 0, 0, 1
+    size_hint_x: None
+    width: 400
+         
 <ComboEdit>:
+    font_size: 20
+    multiline: False
+    background_color: 0.608, 0.608, 0.627, 0.1
+    foreground_color: 0.608, 0.608, 0.627, 1
+    text: "start typing to see suggestions"
+    options: ""
     size_hint: .5, .5
     pos_hint: {'center':(.5, .5)}
-    options: [Button(text = str(x), size_hint_y = None, height = 50) for x in range(3)]
     
 <MultiSelectOption@ToggleButton>:
     size_hint: 1, None
     height: '48dp'
+    
+<MultiSelectSpinner>:
+    color: 0, 0, 0, 1
+    font_size: 20
+    background_color: 0.608, 0.608, 0.627, 0.2
+    text: "choose 1 or more"
+
+<RatingButton>:
+    background_color: 0.608, 0.608, 0.627, 0.5
+    font_size: 20
+    group: "score"
+    
+<CircularProgressBar>:
+    size_hint: (None, None)
+    height: 70
+    width: 70
+    max: 100
 """)
 
 
@@ -38,6 +78,18 @@ class ColoredLabel(Label):
     source: http://robertour.com/2015/07/15/kivy-label-or-widget-with-background-color-property/
     """
     background_color = ListProperty([1,1,1,1])
+
+
+class GrayListLabel(ColoredLabel):
+    pass
+
+
+class WhiteListLabel(ColoredLabel):
+    pass
+
+
+class RatingButton(ToggleButton):
+    pass
 
 
 class ComboEdit(TextInput):
@@ -89,6 +141,8 @@ class MultiSelectSpinner(Button):
     drop_down = ObjectProperty(None)
     values = ListProperty([])
     selected_values = ListProperty([])
+    check_type = StringProperty()
+    saved_values = []
 
     def __init__(self, **kwargs):
         self.bind(drop_down=self.update_drop_down)
@@ -100,21 +154,46 @@ class MultiSelectSpinner(Button):
         if self.drop_down.parent:
             self.drop_down.dismiss()
         else:
+            if self.saved_values:
+                self.values = self.saved_values
+
+            if self.check_type in SocioLingScreen.choices:
+                self.saved_values = self.values[:]
+                for value in self.saved_values:
+                    if value in SocioLingScreen.choices[self.check_type]:
+                        self.values.remove(value)
+            self.create_buttons()
             self.drop_down.open(self)
+
+    def create_buttons(self):
+        if self.drop_down.children:
+            self.drop_down.clear_widgets()
+        for value in self.values:
+            b = Factory.MultiSelectOption(text=value)
+            if value in self.selected_values:
+                b.state = "down"
+            b.bind(state=self.select_value)
+            self.drop_down.add_widget(b)
 
     def update_drop_down(self, *args):
         if not self.drop_down:
             self.drop_down = DropDown()
         values = self.values
         if values:
-            if self.drop_down.children:
-                self.drop_down.clear_widgets()
-            for value in values:
-                b = Factory.MultiSelectOption(text=value)
-                b.bind(state=self.select_value)
-                self.drop_down.add_widget(b)
+            self.create_buttons()
 
     def select_value(self, instance, value):
+        choices = {'5': 15,
+                   '6': 15,
+                   '7': 13,
+                   '8': 12,
+                   '9': 11}
+
+        if len(self.selected_values) > 4:
+            self.font_size = choices.get(str(len(self.selected_values)), 10)
+        else:
+            self.font_size = 20
+
         if value == "down":
             if instance.text not in self.selected_values:
                 self.selected_values.append(instance.text)
@@ -126,9 +205,49 @@ class MultiSelectSpinner(Button):
         if value:
             self.text = ", ".join(value)
         else:
+            self.font_size = 20
             self.text = "choose 1 or more"
 
 
-Factory.register('CustomKivy', module='ColoredLabel') # default: light-gray
-Factory.register('CustomKivy', module='ComboEdit')
-Factory.register('CustomKivy', module='MultiSelectSpinner')
+class CircularProgressBar(ProgressBar):
+    """
+    source: https://stackoverflow.com/questions/50543028/how-to-make-circular-progress-bar-in-kivy
+    """
+
+    def __init__(self, **kwargs):
+        super(CircularProgressBar, self).__init__(**kwargs)
+        self.thickness = 25
+        self.label = CoreLabel(text="0%", font_size=self.thickness-5)
+        self.texture_size = None
+        self.refresh_text()
+
+    def draw(self):
+        with self.canvas:
+            self.canvas.clear()
+            Color(0.608, 0.608, 0.627, 1)
+            # label = self.parent.children[1]
+            # y = label.pos[1] + label.height + 15
+            # self.pos = [100, 100]
+            # print(self.pos)
+            # print(self.size)
+            # print(self.parent.pos)
+            Ellipse(pos=self.pos, size=self.size)
+            Color(1, 0.49, 0.25, 1)
+            Ellipse(pos=self.pos, size=self.size,
+                    angle_end=(0.001 if self.value_normalized == 0 else self.value_normalized*360))
+            Color(1, 1, 1)
+            Ellipse(pos=(self.pos[0] + self.thickness / 2, self.pos[1] + self.thickness / 2),
+                    size=(self.size[0] - self.thickness, self.size[1] - self.thickness))
+            Color(0, 0, 0, 1)
+            Rectangle(texture=self.label.texture, size=self.texture_size,
+                      pos=(self.size[0]/2 - self.texture_size[0]/2, self.size[1]/2 - self.texture_size[1]/2))
+
+    def refresh_text(self):
+        self.label.refresh()
+        self.texture_size = list(self.label.texture.size)
+
+    def set_value(self, value):
+        self.value = value
+        self.label.text = str(int(self.value_normalized*100)) + "%"
+        self.refresh_text()
+
