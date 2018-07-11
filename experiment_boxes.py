@@ -5,8 +5,8 @@ import os
 import sys
 
 PATH = os.path.dirname(os.path.abspath(__file__))
-KIVY_PATH = PATH + "/experiment_boxes/"
-sys.path.append(PATH + '/experiment_types')
+KIVY_PATH = PATH + "/experiment_styles/"
+sys.path.append(PATH + '/experiment_classes')
 
 from acceptability_design import AcceptabilityDesign
 from self_paced_design import SelfPacedDesign

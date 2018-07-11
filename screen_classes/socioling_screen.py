@@ -18,7 +18,7 @@ class SocioLingScreen(Screen):
     """
     Sociolinguistic data Screen: ask informants to fill in info about themselves
     """
-    database_created = os.path.isfile("results.db")
+    database_created = os.path.isfile(os.path.abspath(__file__) + "/../../" + "results.db")
     choices = dict()
     email = ObjectProperty(None)
 
@@ -35,7 +35,7 @@ class SocioLingScreen(Screen):
             "other_languages": "Other languages you speak"
             }
 
-    cities_list = parse_cities("cities.txt")
+    cities_list = parse_cities("media_data/cities.txt")
 
     native_languages = ["russian", "ukrainian", "belarus",
                         "kazakh", "tatar", "chechen",

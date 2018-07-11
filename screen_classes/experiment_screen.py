@@ -7,7 +7,6 @@ class ExperimentScreen(Screen):
     Where actual experiment takes place
     """
     def load_experiment(self):
-        # self.type is extracted from welcome screen
 
         experiment_types = {
             "acceptability": "AcceptabilityBox",

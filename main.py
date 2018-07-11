@@ -3,6 +3,12 @@ from kivy.properties import StringProperty
 from kivy.uix.screenmanager import Screen
 from kivy.core.window import Window
 
+import os
+import sys
+
+PATH = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(PATH + '/screen_classes')
+
 import custom_widgets
 from welcome_screen import WelcomeScreen, LoadDialog
 from agreement_screen import AgreementScreen

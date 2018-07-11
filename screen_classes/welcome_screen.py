@@ -14,7 +14,6 @@ class WelcomeScreen(Screen):
     """
     loadfile = ObjectProperty(None)
     text = StringProperty('')
-    help = StringProperty("meow")
     type = StringProperty('')
     type_chosen = False
 
@@ -78,4 +77,4 @@ class LoadDialog(FloatLayout):
     cancel = ObjectProperty(None)
 
     def get_path(self):
-        return os.path.dirname(os.path.abspath(__file__))
+        return os.path.abspath(__file__ + "/../../")

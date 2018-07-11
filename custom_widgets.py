@@ -10,6 +10,12 @@ from kivy.uix.progressbar import ProgressBar
 from kivy.core.text import Label as CoreLabel
 from kivy.graphics import Color, Ellipse, Rectangle
 
+import os
+import sys
+
+PATH = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(PATH + '/screen_classes')
+
 from socioling_screen import SocioLingScreen
 
 Builder.load_string("""

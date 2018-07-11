@@ -4,6 +4,11 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.core.window import Window
 
 from datetime import datetime
+import os
+import sys
+
+PATH = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(PATH + '/screen_classes')
 
 from results_database import db_session, Participant, SelfPacedTrainingSentences, \
                              SelfPacedTrainingQuestions,SelfPacedExperimentSentences, \

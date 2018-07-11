@@ -1,6 +1,11 @@
 from kivy.uix.label import Label
 
 from datetime import datetime
+import os
+import sys
+
+PATH = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(PATH + '/screen_classes')
 
 from results_database import db_session, Participant, AcceptabilityTraining, AcceptabilityExperiment
 from socioling_screen import SocioLingScreen
