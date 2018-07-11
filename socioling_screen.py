@@ -5,15 +5,19 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.popup import Popup
 
 from datetime import datetime
+import os
 
 from cities import parse_cities
-from results_database import db_session, Participant
+from results_database import (db_session, Base, engine, Participant,
+                              AcceptabilityTraining, SelfPacedTrainingSentences,
+                              SelfPacedTrainingQuestions)
 
 
 class SocioLingScreen(Screen):
     """
     Sociolinguistic data Screen: ask informants to fill in info about themselves
     """
+    database_created = os.path.isfile("results.db")
     choices = dict()
     email = ObjectProperty(None)
 
@@ -48,12 +52,9 @@ class SocioLingScreen(Screen):
     def add_choice(self, key, value):
         if value and (len(value) > 2 or type(value) == ObservableList):
             self.choices[key] = value
-            print(self.choices)
-            print(self.email)
         else:
             if key in self.choices:
                 del self.choices[key]
-                print(self.choices)
 
     def add_city(self, key, value):
         if value == "" or value in self.cities_list:
@@ -73,7 +74,20 @@ class SocioLingScreen(Screen):
     def dismiss_popup(self):
         self.popup.dismiss()
 
+    def create_database(self):
+
+        db_tables = {
+            "acceptability": [Participant.__table__, AcceptabilityTraining.__table__],
+            "self-paced": [Participant.__table__, SelfPacedTrainingSentences.__table__,
+                           SelfPacedTrainingQuestions.__table__]
+        }
+        Base.metadata.create_all(bind=engine, tables=db_tables[self.type])
+        self.database_created = True
+
     def save_info(self):
+        if not self.database_created:
+            self.create_database()
+            
         errors = [key for key in self.data.keys() if key not in self.choices.keys()]
         try:
             exists_name = db_session.query(Participant.id).filter(Participant.name == self.choices["name"]).count()

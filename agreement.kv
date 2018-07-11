@@ -1,0 +1,100 @@
+<AgreementScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        ColoredLabel:
+            text: "Participation Agreement"
+            font_size: 40
+            height: 50
+
+        GrayListLabel:
+            text: "[b]I am aware that:[/b]"
+            font_size: 25
+            markup: True
+            size_hint_x: 1
+
+        Widget:
+            size_hint_y: None
+            height: 15
+
+        GrayListLabel:
+            text: "All information or data which is obtained will not be made public"
+            size_hint_x: 1
+            height: 30
+
+        GrayListLabel:
+            text: "and will only be used for scientific purposes"
+            size_hint_x: 1
+            height: 30
+
+        Widget:
+            size_hint_y: None
+            height: 15
+
+        GrayListLabel:
+            text: "Any data which can be identified with me will be treated confidentially"
+            size_hint_x: 1
+            height: 60
+
+        Widget:
+            size_hint_y: None
+            height: 15
+
+        GrayListLabel:
+            text: "This experiment will only take about 15 minutes of my time"
+            size_hint_x: 1
+            height: 60
+
+        Widget:
+            size_hint_y: None
+            height: 15
+
+        GrayListLabel:
+            text: "[b]I agree[/b]"
+            markup: True
+            font_size: 25
+            size_hint_x: 1
+            height: 40
+
+        CheckBox:
+            canvas.before:
+                Color:
+                    rgba: 0.95, 0.95, 0.95, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            size_hint_y: None
+            height: '45dp'
+            color: 0, 0, 0, 1
+            on_active: root.record_agreement(self.state)
+
+        Widget:
+            size_hint_y: None
+            height: 20
+
+        ColoredLabel:
+            text: "If you want to find out the results of the experiment, \nyou can leave us your email address:"
+            height: 60
+            font_size: 22
+
+        TextInput:
+            text: ''
+            font_size: 20
+            size_hint_y: None
+            size_hint_x: 0.7
+            pos_hint: {'center_x': 0.5}
+            height: 40
+            background_color: 0.608, 0.608, 0.627, 0.1
+            color: 0, 0, 0, 1
+            multiline: False
+            on_text: root.record_email(self.text)
+
+        Widget:
+
+        Button:
+            text: "Continue"
+            size_hint_y: None
+            height: 40
+            font_size: 25
+            background_color: 0.608, 0.608, 0.627, 0.5
+            on_press: root.check_agreement()

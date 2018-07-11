@@ -1,0 +1,88 @@
+<WelcomeScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        ColoredLabel:
+            height: 60
+            font_size: 25
+            text: "Please choose experiment type and upload your file"
+
+        ColoredLabel:
+            text: "Type of your experiment"
+            background_color: 0, 0, 0.4, 1
+            font_size: 30
+            height: 50
+
+        GridLayout:
+            cols: 2
+            size_hint_y: None
+            height: 90
+
+            GrayListLabel:
+                size_hint: (1, None)
+                height: 50
+                text: "acceptability\njudgement"
+
+            GrayListLabel:
+                size_hint: (1, None)
+                height: 50
+                text: "self-paced\nreading"
+
+            CheckBox:
+                size_hint_y: None
+                height: '40dp'
+                color: 0, 0, 0.4, 1
+                group: "exp"
+                on_active: root.record_choice(self.state, "acceptability")
+
+            CheckBox:
+                size_hint_y: None
+                height: '40dp'
+                color: 0, 0, 0.4, 1
+                group: "exp"
+                on_active: root.record_choice(self.state, "self-paced")
+
+        ColoredLabel:
+            background_color: 0, 0, 0.4, 1
+            height: 3
+
+        Widget:
+            size_hint_y: None
+            height: 5
+
+        Image:
+            source: "shiba.jpg"
+
+        Widget:
+            size_hint_y: None
+            height: 5
+
+        Button:
+            size_hint_y: None
+            height: 60
+            text: "Upload"
+            font_size: 25
+            background_color: 0, 0, 1, 1
+            on_release: root.upload()
+
+
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+
+        FileChooserListView:
+            id: filechooser
+            path: root.get_path()
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Upload"
+                on_release: root.load(filechooser.path, filechooser.selection)
