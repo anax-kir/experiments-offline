@@ -1,0 +1,26 @@
+<SelfPacedBox>
+    orientation: "vertical"
+    canvas.before:
+        Color:
+            rgba: (1, 1, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    ColoredLabel:
+        id: top_text
+        text: "Please read the sentence as quickly as possible, \nwhile still understanding it"
+        text_size: self.width, None
+        font_size: 25
+        size_hint: 1, None
+        height: self.texture_size[1] + 15
+        halign: "center"
+
+    RelativeLayout:
+        id: progress_bar
+        size_hint: (None, None)
+        height: 75
+        width: root.width * 0.2
+        pos_hint: {'center_x': 1}
+
+    Widget:

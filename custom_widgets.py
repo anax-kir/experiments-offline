@@ -225,12 +225,6 @@ class CircularProgressBar(ProgressBar):
         with self.canvas:
             self.canvas.clear()
             Color(0.608, 0.608, 0.627, 1)
-            # label = self.parent.children[1]
-            # y = label.pos[1] + label.height + 15
-            # self.pos = [100, 100]
-            # print(self.pos)
-            # print(self.size)
-            # print(self.parent.pos)
             Ellipse(pos=self.pos, size=self.size)
             Color(1, 0.49, 0.25, 1)
             Ellipse(pos=self.pos, size=self.size,

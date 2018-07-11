@@ -59,8 +59,8 @@ class Participant(Base):
         return '<Participant {} ({}, from {})>'.format(self.name, self.age, self.now_city)
 
 
-class TrainingResult(Base):
-    __tablename__ = "training"
+class AcceptabilityTraining(Base):
+    __tablename__ = "acceptability_training"
     id = Column(Integer, primary_key=True)
     sentence = Column(Text)
     rating = Column(Integer)
@@ -74,6 +74,50 @@ class TrainingResult(Base):
                  participant_id=None):
         self.sentence = sentence
         self.rating = rating
+        self.time = time
+        self.participant_id = participant_id
+
+
+class SelfPacedTrainingSentences(Base):
+    __tablename__ = "self_paced_training_sentences"
+    id = Column(Integer, primary_key=True)
+    sentence_id = Column(Integer)
+    word = Column(String)
+    time = Column(String)
+    participant_id = Column(Integer, ForeignKey('participants.id'))
+
+    def __init__(self,
+                 sentence_id=None,
+                 word=None,
+                 time=None,
+                 participant_id=None):
+        self.sentence_id = sentence_id
+        self.word = word
+        self.time = time
+        self.participant_id = participant_id
+
+
+class SelfPacedTrainingQuestions(Base):
+    __tablename__ = "self_paced_training_questions"
+    id = Column(Integer, primary_key=True)
+    sentence_id = Column(Integer)
+    question = Column(String)
+    answer = Column(String)
+    answer_correct = Column(Integer)
+    time = Column(String)
+    participant_id = Column(Integer, ForeignKey('participants.id'))
+
+    def __init__(self,
+                 sentence_id=None,
+                 question=None,
+                 answer=None,
+                 answer_correct=None,
+                 time=None,
+                 participant_id=None):
+        self.sentence_id = sentence_id
+        self.question = question
+        self.answer = answer
+        self.answer_correct = answer_correct
         self.time = time
         self.participant_id = participant_id
 

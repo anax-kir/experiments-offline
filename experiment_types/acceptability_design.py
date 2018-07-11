@@ -2,9 +2,9 @@ from kivy.uix.label import Label
 
 from datetime import datetime
 
-from results_database import db_session, Participant, TrainingResult
+from results_database import db_session, Participant, AcceptabilityTraining
 from socioling_screen import SocioLingScreen
-import custom_widgets
+from custom_widgets import CircularProgressBar
 
 
 class AcceptabilityDesign:
@@ -69,7 +69,7 @@ class AcceptabilityDesign:
         participant = Participant.query.filter(Participant.name == name).first()
         for index in range(len(self.test_sentences)):
             rating, time = self.scores[str(index+1)]
-            result = TrainingResult(
+            result = AcceptabilityTraining(
                                     self.test_sentences[index]["test"],
                                     rating,
                                     time,
@@ -79,7 +79,7 @@ class AcceptabilityDesign:
         db_session.commit()
 
     def display_sentence(self, *args):
-        pb = custom_widgets.CircularProgressBar()
+        pb = CircularProgressBar()
         pb.set_value((100 * (self.current_sentence-1)) / len(self.test_sentences))
         saved = self.main_box.children[:]
         saved.remove(self.progress_layout)
