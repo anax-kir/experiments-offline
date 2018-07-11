@@ -8,12 +8,21 @@ class TrainingScreen(Screen):
     Where training sentences are displayed
     """
 
-    def import_acceptability(self):
+    def load_experiment(self):
+        # self.type is extracted from welcome screen
+
+        experiment_types = {
+            "acceptability": "AcceptabilityBox",
+            "self-paced": "SelfPacedBox"
+        }
+
+        box_name = experiment_types[self.type]
+
         # a hack to make the kv file load
-        load_box = exp.AcceptabilityBox()
+        load_box = getattr(exp, box_name)()
         load_box.load_attr()
         #
-        experiment_box = exp.AcceptabilityBox()
+        experiment_box = getattr(exp, box_name)()
         saved = self.children[:]
         self.clear_widgets()
         self.add_widget(experiment_box)
@@ -22,23 +31,6 @@ class TrainingScreen(Screen):
         self.experiment_design = experiment_box.create_design()
         instructions_label = getattr(self.ids, "instructions_label")
         instructions_label.text = self.experiment_design.instructions
-
-    # def import_self_paced(self):
-    #     print("hey2")
-
-    # нужна киви-переменная, в которой будем хранить тип эксперимента,
-    # который экспериментатор выбирает при загрузке своего файла
-    # пока так:
-
-    def load_experiment(self):
-        self.experiment_current = "acceptability"
-
-        experiment_types = {
-            "acceptability": self.import_acceptability  # ,
-            # "self_paced": self.import_self_paced
-        }
-
-        experiment_types[self.experiment_current]()
 
     def remove_widgets(self, widgets):
         for widget in widgets:

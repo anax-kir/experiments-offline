@@ -12,12 +12,24 @@ class WelcomeScreen(Screen):
     """
     loadfile = ObjectProperty(None)
     text = StringProperty('')
+    type = StringProperty('')
+    type_chosen = False
+
+    def record_choice(self, state, value):
+        if state == "down":
+            self.type_chosen = True
+            self.type = value
+        else:
+            self.type_chosen = False
+
+    def upload(self):
+        if self.type_chosen:
+            self.show_load()
 
     def dismiss_popup(self):
         self._popup.dismiss()
 
     def show_load(self):
-        print('"Upload" was pressed')
         content = LoadDialog(load=self.load,
                              cancel=self.dismiss_popup)
         self._popup = Popup(title="Upload experiment file",
