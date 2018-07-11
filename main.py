@@ -15,7 +15,8 @@ class DataScreen(Screen):
     """
     Data Screen: show file contents so user can check that file was parsed correctly
     """
-    label_text = StringProperty('')
+    text = StringProperty('')
+
 
 class StartScreen(Screen):
     """
@@ -24,11 +25,17 @@ class StartScreen(Screen):
     pass
 
 
+class EndScreen(Screen):
+    """
+    Experiment ends here
+    """
+    pass
+
+
 class ExperimentApp(App):
     """
     Main Application Class
     """
-
     def build(self):
         self.title = "Experiments: Layer 0"
         Window.clearcolor = (1, 1, 1, 1)

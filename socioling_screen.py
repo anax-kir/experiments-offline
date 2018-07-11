@@ -9,8 +9,9 @@ import os
 
 from cities import parse_cities
 from results_database import (db_session, Base, engine, Participant,
-                              AcceptabilityTraining, SelfPacedTrainingSentences,
-                              SelfPacedTrainingQuestions)
+                              AcceptabilityTraining, AcceptabilityExperiment,
+                              SelfPacedTrainingSentences, SelfPacedTrainingQuestions,
+                              SelfPacedExperimentSentences, SelfPacedExperimentQuestions)
 
 
 class SocioLingScreen(Screen):
@@ -77,9 +78,12 @@ class SocioLingScreen(Screen):
     def create_database(self):
 
         db_tables = {
-            "acceptability": [Participant.__table__, AcceptabilityTraining.__table__],
+            "acceptability": [Participant.__table__, AcceptabilityTraining.__table__,
+                              AcceptabilityExperiment.__table__],
             "self-paced": [Participant.__table__, SelfPacedTrainingSentences.__table__,
-                           SelfPacedTrainingQuestions.__table__]
+                           SelfPacedTrainingQuestions.__table__,
+                           SelfPacedExperimentSentences.__table__,
+                           SelfPacedExperimentQuestions.__table__]
         }
         Base.metadata.create_all(bind=engine, tables=db_tables[self.type])
         self.database_created = True

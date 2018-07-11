@@ -18,7 +18,7 @@ ScreenManager:
     DataScreen:
         name: "DataScreen"
         manager: screen_manager
-        label_text: welcome_screen.text
+        text: welcome_screen.text
 
     StartScreen:
         name: "StartScreen"
@@ -43,6 +43,11 @@ ScreenManager:
     ExperimentScreen:
         name: "ExperimentScreen"
         manager: screen_manager
+        type: welcome_screen.type
+
+    EndScreen:
+        name: "EndScreen"
+        manager: screen_manager
 
 
 <DataScreen>:
@@ -53,7 +58,7 @@ ScreenManager:
             text: "Please check file contents before pressing continue"
 
         RstDocument:
-            text: root.label_text
+            text: root.text
 
         BoxLayout:
             orientation: "horizontal"
@@ -88,3 +93,12 @@ ScreenManager:
             font_size: 50
             on_press: root.manager.current = "AgreementScreen"
             background_color: (0, 1, 0, 1)
+
+<EndScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        Label:
+            color: 0, 0, 0, 1
+            text: "You reached the end! Congrats!"
+            font_size: 50

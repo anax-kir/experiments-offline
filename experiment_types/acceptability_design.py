@@ -2,30 +2,27 @@ from kivy.uix.label import Label
 
 from datetime import datetime
 
-from results_database import db_session, Participant, AcceptabilityTraining
+from results_database import db_session, Participant, AcceptabilityTraining, AcceptabilityExperiment
 from socioling_screen import SocioLingScreen
 from custom_widgets import CircularProgressBar
 
 
 class AcceptabilityDesign:
 
-    def __init__(self, main_box, progress_layout):
+    def __init__(self, main_box, progress_layout, experiment_part):
         self.main_box = main_box
         self.progress_layout = progress_layout
+        self.experiment_part = experiment_part  # test or actual experiment
 
     scores = dict()
 
-    instructions = "First, here are some [b]training[/b] sentences for you to get familiar with the experiment. \n\n" \
-                   "For each sentence please determine its acceptability on a scale from 1 to 5"
+    instructions = "For each sentence please determine its acceptability\non a scale from [b]1[/b] to [b]5[/b]"
 
     test_sentences = [
         {"test": "Who thinks that Paul took the necklace?"},
         {"test": "What does the detective think that Paul took?"},
         {"test": "Who wonders whether Paul took the necklace?"}
     ]
-
-    # предлагаю сначала рандомно отсортировать список, а потом выдавать по порядку
-    # (пока рандома нет, сколько тестовых нужно?)
 
     current_sentence = 1
     sentences_quantity = 3
@@ -62,18 +59,37 @@ class AcceptabilityDesign:
                 self.display_sentence()
             else:
                 self.save_scores()
-                self.main_box.parent.manager.current = "ExperimentScreen"
 
     def save_scores(self):
         name = SocioLingScreen.choices["name"]
-        participant = Participant.query.filter(Participant.name == name).first()
+        self.participant = Participant.query.filter(Participant.name == name).first()
+        if self.experiment_part == "training":
+            self.save_scores_training()
+            self.main_box.parent.manager.current = "ExperimentScreen"
+        elif self.experiment_part == "experiment":
+            self.save_scores_experiment()
+            self.main_box.parent.manager.current = "EndScreen"
+
+    def save_scores_training(self):
         for index in range(len(self.test_sentences)):
             rating, time = self.scores[str(index+1)]
             result = AcceptabilityTraining(
                                     self.test_sentences[index]["test"],
                                     rating,
                                     time,
-                                    participant.id
+                                    self.participant.id
+                                    )
+            db_session.add(result)
+        db_session.commit()
+
+    def save_scores_experiment(self):
+        for index in range(len(self.test_sentences)):
+            rating, time = self.scores[str(index+1)]
+            result = AcceptabilityExperiment(
+                                    self.test_sentences[index]["test"],
+                                    rating,
+                                    time,
+                                    self.participant.id
                                     )
             db_session.add(result)
         db_session.commit()
