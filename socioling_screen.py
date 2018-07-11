@@ -87,7 +87,7 @@ class SocioLingScreen(Screen):
     def save_info(self):
         if not self.database_created:
             self.create_database()
-
+            
         errors = [key for key in self.data.keys() if key not in self.choices.keys()]
         try:
             exists_name = db_session.query(Participant.id).filter(Participant.name == self.choices["name"]).count()

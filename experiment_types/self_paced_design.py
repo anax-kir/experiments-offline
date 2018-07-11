@@ -168,5 +168,3 @@ class SelfPacedDesign:
                 )
             db_session.add(result)
         db_session.commit()
-
-
