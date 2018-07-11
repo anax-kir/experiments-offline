@@ -17,7 +17,6 @@ class DataScreen(Screen):
     """
     text = StringProperty('')
 
-
 class StartScreen(Screen):
     """
     Press "start" to begin actual experiment

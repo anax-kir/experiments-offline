@@ -14,7 +14,6 @@ class WelcomeScreen(Screen):
     """
     loadfile = ObjectProperty(None)
     text = StringProperty('')
-    help = StringProperty("meow")
     type = StringProperty('')
     type_chosen = False
 
