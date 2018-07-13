@@ -97,7 +97,26 @@ ScreenManager:
     BoxLayout:
         orientation: "vertical"
 
-        Label:
-            color: 0, 0, 0, 1
-            text: "You reached the end! Congrats!"
-            font_size: 50
+        Widget:
+            size_hint_y: None
+            height: 10
+
+        ColoredLabel:
+            background_color: 0.95, 0.95, 0.95, 1
+            height: 150
+            color: 1, 0.49, 0.25, 1
+            text: "[b]That is the end of the experiment.\nThank you for participation![/b]"
+            font_size: 40
+            markup: True
+
+        Widget:
+            size_hint_y: None
+            height: 10
+
+        Image:
+            source: "media_data/shiba_end.jpg"
+
+        Widget:
+            size_hint_y: None
+            height: 10
+
