@@ -4,6 +4,8 @@ from kivy.uix.popup import Popup
 from kivy.uix.floatlayout import FloatLayout
 
 import os
+import _thread
+import time
 
 
 class WelcomeScreen(Screen):
@@ -36,6 +38,25 @@ class WelcomeScreen(Screen):
                             content=content,
                             size_hint=(0.9, 0.9))
         self._popup.open()
+        _thread.start_new_thread(self.track_changes_dir, ())
+
+    def track_changes_dir(self):
+        path_to_watch = "."
+        before = dict([(item, None) for item in os.listdir(path_to_watch)])
+        while True:
+            if self.manager.current != "WelcomeScreen":
+                break
+            time.sleep(10)
+            after = dict([(item, None) for item in os.listdir(path_to_watch)])
+            added = [item for item in after if item not in before]
+            removed = [item for item in before if item not in after]
+            if added:
+                print("Added: ", ", ".join(added))
+            if removed:
+                print("Removed: ", ", ".join(removed))
+            if before != after:
+                self.dismiss_popup()
+                self.show_load()
 
     def load(self, path, filename):
         try:
@@ -56,4 +77,4 @@ class LoadDialog(FloatLayout):
     cancel = ObjectProperty(None)
 
     def get_path(self):
-        return os.path.dirname(os.path.abspath(__file__))
+        return os.path.abspath(__file__ + "/../../")

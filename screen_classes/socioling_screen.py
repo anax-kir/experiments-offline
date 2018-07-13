@@ -9,15 +9,16 @@ import os
 
 from cities import parse_cities
 from results_database import (db_session, Base, engine, Participant,
-                              AcceptabilityTraining, SelfPacedTrainingSentences,
-                              SelfPacedTrainingQuestions)
+                              AcceptabilityTraining, AcceptabilityExperiment,
+                              SelfPacedTrainingSentences, SelfPacedTrainingQuestions,
+                              SelfPacedExperimentSentences, SelfPacedExperimentQuestions)
 
 
 class SocioLingScreen(Screen):
     """
     Sociolinguistic data Screen: ask informants to fill in info about themselves
     """
-    database_created = os.path.isfile("results.db")
+    database_created = os.path.isfile(os.path.abspath(__file__) + "/../../" + "results.db")
     choices = dict()
     email = ObjectProperty(None)
 
@@ -34,7 +35,7 @@ class SocioLingScreen(Screen):
             "other_languages": "Other languages you speak"
             }
 
-    cities_list = parse_cities("cities.txt")
+    cities_list = parse_cities("media_data/cities.txt")
 
     native_languages = ["russian", "ukrainian", "belarus",
                         "kazakh", "tatar", "chechen",
@@ -77,9 +78,12 @@ class SocioLingScreen(Screen):
     def create_database(self):
 
         db_tables = {
-            "acceptability": [Participant.__table__, AcceptabilityTraining.__table__],
+            "acceptability": [Participant.__table__, AcceptabilityTraining.__table__,
+                              AcceptabilityExperiment.__table__],
             "self-paced": [Participant.__table__, SelfPacedTrainingSentences.__table__,
-                           SelfPacedTrainingQuestions.__table__]
+                           SelfPacedTrainingQuestions.__table__,
+                           SelfPacedExperimentSentences.__table__,
+                           SelfPacedExperimentQuestions.__table__]
         }
         Base.metadata.create_all(bind=engine, tables=db_tables[self.type])
         self.database_created = True
@@ -87,7 +91,7 @@ class SocioLingScreen(Screen):
     def save_info(self):
         if not self.database_created:
             self.create_database()
-            
+
         errors = [key for key in self.data.keys() if key not in self.choices.keys()]
         try:
             exists_name = db_session.query(Participant.id).filter(Participant.name == self.choices["name"]).count()

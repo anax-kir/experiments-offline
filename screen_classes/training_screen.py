@@ -28,9 +28,12 @@ class TrainingScreen(Screen):
         self.add_widget(experiment_box)
         for widget in saved:
             self.add_widget(widget)
-        self.experiment_design = experiment_box.create_design()
+        self.experiment_design = experiment_box.create_design(experiment_part="training")
         instructions_label = getattr(self.ids, "instructions_label")
-        instructions_label.text = self.experiment_design.instructions
+
+        training_text = "First, here are some [b]training[/b] sentences " \
+                        "for you to get familiar with the experiment. \n\n"
+        instructions_label.text = training_text + self.experiment_design.instructions
 
     def remove_widgets(self, widgets):
         for widget in widgets:

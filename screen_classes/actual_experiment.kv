@@ -1,0 +1,57 @@
+<ExperimentScreen>:
+    BoxLayout:
+        id: exp_instruction_box
+        orientation: "vertical"
+        canvas.before:
+            Color:
+                rgba: (1, 1, 1, 1)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Widget:
+        Label:
+            id: exp_instructions_label
+            color: 0, 0, 0, 1
+            font_size: 30
+            markup: True
+            text_size: self.width, None
+            size_hint: 1, None
+            height: self.texture_size[1]
+            halign: "center"
+
+        Widget:
+        Button:
+            size_hint_y: None
+            height: 100
+            text: "Continue"
+            font_size: 50
+            background_color: (0, 1, 0, 1)
+            on_press:
+                root.remove_widgets(["exp_instruction_box"])
+                root.experiment_design.display_sentence()
+
+    BoxLayout:
+        id: exp_attention_box
+        orientation: "vertical"
+        canvas.before:
+            Color:
+                rgba: (1, 1, 1, 1)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            color: 0, 0, 0, 1
+            text: "That's the end of the training part.\n\nPress [b]Continue[/b] to proceed to experiment."
+            markup: True
+            font_size: 35
+
+        Button:
+            size_hint_y: None
+            height: 100
+            text: "Continue"
+            font_size: 50
+            background_color: (0, 1, 0, 1)
+            on_press:
+                root.remove_widgets(["exp_attention_box"])
+                root.load_experiment()

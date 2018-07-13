@@ -1,10 +1,10 @@
 #:kivy 1.10.1
 #:import sm kivy.uix.screenmanager
-#:include welcome.kv
-#:include agreement.kv
-#:include socioling.kv
-#:include training.kv
-#:include actual_experiment.kv
+#:include screen_classes/welcome.kv
+#:include screen_classes/agreement.kv
+#:include screen_classes/socioling.kv
+#:include screen_classes/training.kv
+#:include screen_classes/actual_experiment.kv
 
 ScreenManager:
     id: screen_manager
@@ -18,7 +18,7 @@ ScreenManager:
     DataScreen:
         name: "DataScreen"
         manager: screen_manager
-        label_text: welcome_screen.text
+        text: welcome_screen.text
 
     StartScreen:
         name: "StartScreen"
@@ -43,7 +43,11 @@ ScreenManager:
     ExperimentScreen:
         name: "ExperimentScreen"
         manager: screen_manager
+        type: welcome_screen.type
 
+    EndScreen:
+        name: "EndScreen"
+        manager: screen_manager
 
 <DataScreen>:
     BoxLayout:
@@ -53,7 +57,7 @@ ScreenManager:
             text: "Please check file contents before pressing continue"
 
         RstDocument:
-            text: root.label_text
+            text: root.text
 
         BoxLayout:
             orientation: "horizontal"
@@ -88,3 +92,31 @@ ScreenManager:
             font_size: 50
             on_press: root.manager.current = "AgreementScreen"
             background_color: (0, 1, 0, 1)
+
+<EndScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        Widget:
+            size_hint_y: None
+            height: 10
+
+        ColoredLabel:
+            background_color: 0.95, 0.95, 0.95, 1
+            height: 150
+            color: 1, 0.49, 0.25, 1
+            text: "[b]That is the end of the experiment.\nThank you for participation![/b]"
+            font_size: 40
+            markup: True
+
+        Widget:
+            size_hint_y: None
+            height: 10
+
+        Image:
+            source: "media_data/shiba_end.jpg"
+
+        Widget:
+            size_hint_y: None
+            height: 10
+

@@ -5,8 +5,8 @@ import os
 import sys
 
 PATH = os.path.dirname(os.path.abspath(__file__))
-KIVY_PATH = PATH + "/experiment_boxes/"
-sys.path.append(PATH + '/experiment_types')
+KIVY_PATH = PATH + "/experiment_styles/"
+sys.path.append(PATH + '/experiment_classes')
 
 from acceptability_design import AcceptabilityDesign
 from self_paced_design import SelfPacedDesign
@@ -14,9 +14,9 @@ from self_paced_design import SelfPacedDesign
 
 class AcceptabilityBox(BoxLayout):
 
-    def create_design(self, *args):
+    def create_design(self, experiment_part, *args):
         progress_layout = getattr(self.ids, "progress_bar")
-        self.experiment_design = AcceptabilityDesign(self, progress_layout)
+        self.experiment_design = AcceptabilityDesign(self, progress_layout, experiment_part)
         return self.experiment_design
 
     def load_attr(self, *args):
@@ -25,9 +25,9 @@ class AcceptabilityBox(BoxLayout):
 
 class SelfPacedBox(BoxLayout):
 
-    def create_design(self, *args):
+    def create_design(self, experiment_part, *args):
         progress_layout = getattr(self.ids, "progress_bar")
-        self.experiment_design = SelfPacedDesign(self, progress_layout)
+        self.experiment_design = SelfPacedDesign(self, progress_layout, experiment_part)
         return self.experiment_design
 
     def load_attr(self, *args):

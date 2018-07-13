@@ -4,20 +4,28 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.core.window import Window
 
 from datetime import datetime
+import os
+import sys
 
-from results_database import db_session, Participant, SelfPacedTrainingSentences, SelfPacedTrainingQuestions
+PATH = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(PATH + '/screen_classes')
+
+from results_database import db_session, Participant, SelfPacedTrainingSentences, \
+                             SelfPacedTrainingQuestions,SelfPacedExperimentSentences, \
+                             SelfPacedExperimentQuestions
+
 from socioling_screen import SocioLingScreen
 from custom_widgets import CircularProgressBar
 
 
 class SelfPacedDesign:
 
-    def __init__(self, main_box, progress_layout):
+    def __init__(self, main_box, progress_layout, experiment_part):
         self.main_box = main_box
         self.progress_layout = progress_layout
+        self.experiment_part = experiment_part  # test or actual experiment
 
-    instructions = "First, here are some [b]training[/b] sentences for you to get familiar with the experiment. \n\n" \
-                   "Press [b]ENTER[/b] or [b]SPACE[/b] to see each word in the sentence one by one. \n\n" \
+    instructions = "Press [b]ENTER[/b] or [b]SPACE[/b] to see each word in the sentence one by one. \n\n" \
                    "Your task is to read the sentence as quickly as possible, " \
                    "while understanding it, as checked by a simple question on the following screen."
 
@@ -38,20 +46,35 @@ class SelfPacedDesign:
     sentences_quantity = 3
     time_codes = []
 
-    def save_quest_results(self, answer, is_correct, time):
-        name = SocioLingScreen.choices["name"]
-        participant = Participant.query.filter(Participant.name == name).first()
-        sentence_id = self.current_sentence
-        result = SelfPacedTrainingQuestions(
-            sentence_id,
-            self.quest_text,
-            answer,
-            is_correct,
-            str(time),
-            participant.id
-            )
+    def save_quest_results(self, is_correct, time):
+        if self.experiment_part == "training":
+            result = self.save_quest_training(is_correct, time)
+        else:
+            result = self.save_quest_experiment(is_correct, time)
         db_session.add(result)
         db_session.commit()
+
+    def save_quest_training(self, is_correct, time):
+        result = SelfPacedTrainingQuestions(
+            self.sentence_id,
+            self.quest_text,
+            self.answer,
+            is_correct,
+            str(time),
+            self.participant.id
+        )
+        return result
+
+    def save_quest_experiment(self, is_correct, time):
+        result = SelfPacedExperimentQuestions(
+            self.sentence_id,
+            self.quest_text,
+            self.answer,
+            is_correct,
+            str(time),
+            self.participant.id
+        )
+        return result
 
     def remove_question_on_ok(self, widget):
         self.main_box.remove_widget(widget)
@@ -64,17 +87,20 @@ class SelfPacedDesign:
             self.top_label.text = self.old_text
             self.display_sentence()
         else:
-            self.main_box.parent.manager.current = "ExperimentScreen"
+            if self.experiment_part == "training":
+                self.main_box.parent.manager.current = "ExperimentScreen"
+            else:
+                self.main_box.parent.manager.current = "EndScreen"
 
     def record_answer(self, widget):
         self.quest_time_end = datetime.now()
         delta = str(self.quest_time_end - self.quest_time_start)
         self.main_box.remove_widget(self.grid)
 
-        answer = widget.text
+        self.answer = widget.text
         is_correct = self.questions[self.current_sentence - 1]["quest"][1]
-        answer_correct = is_correct and answer == "Yes" or not is_correct and answer == "No"
-        self.save_quest_results(answer, int(answer_correct), delta)
+        answer_correct = is_correct and self.answer == "Yes" or not is_correct and self.answer == "No"
+        self.save_quest_results(int(answer_correct), delta)
 
         if not answer_correct:
             self.question.text = "[b]Not true! Please read quickly, but carefully[/b]"
@@ -154,6 +180,37 @@ class SelfPacedDesign:
             self.sent.text = " ".join(current_text)
             self.time_start = datetime.now()
             self.pos += 1
+
+    def save_sent_results(self):
+        name = SocioLingScreen.choices["name"]
+        self.participant = Participant.query.filter(Participant.name == name).first()
+        self.sentence_id = self.current_sentence
+        if self.experiment_part == "training":
+            self.save_sent_training()
+        elif self.experiment_part == "experiment":
+            self.save_sent_experiment()
+
+    def save_sent_training(self):
+        for word, time_code in zip(self.full_text, self.time_codes):
+            result = SelfPacedTrainingSentences(
+                self.sentence_id,
+                word,
+                time_code,
+                self.participant.id
+                )
+            db_session.add(result)
+        db_session.commit()
+
+    def save_sent_experiment(self):
+        for word, time_code in zip(self.full_text, self.time_codes):
+            result = SelfPacedExperimentSentences(
+                self.sentence_id,
+                word,
+                time_code,
+                self.participant.id
+                )
+            db_session.add(result)
+        db_session.commit()
 
     def save_sent_results(self):
         name = SocioLingScreen.choices["name"]
