@@ -4,3 +4,5 @@ examples/
 .idea/
 __pycache__/
 *.db
+parse.py
+*.csv

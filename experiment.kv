@@ -16,6 +16,7 @@ ScreenManager:
         manager: screen_manager
 
     DataScreen:
+        id: data_screen
         name: "DataScreen"
         manager: screen_manager
         text: welcome_screen.text
@@ -39,11 +40,13 @@ ScreenManager:
         name: "TrainingScreen"
         manager: screen_manager
         type: welcome_screen.type
+        test_sentences: data_screen.test_sentences
 
     ExperimentScreen:
         name: "ExperimentScreen"
         manager: screen_manager
         type: welcome_screen.type
+        exp_sentences: data_screen.exp_sentences
 
     EndScreen:
         name: "EndScreen"

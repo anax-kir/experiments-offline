@@ -1,5 +1,5 @@
 from kivy.app import App
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, ListProperty
 from kivy.uix.screenmanager import Screen
 from kivy.core.window import Window
 from kivy.lang.builder import Builder
@@ -25,6 +25,18 @@ class DataScreen(Screen):
     Data Screen: show file contents so user can check that file was parsed correctly
     """
     text = StringProperty('')
+
+    test_sentences = ListProperty([
+        {"test": "Who thinks that Paul took the necklace?"},
+        {"test": "What does the detective think that Paul took?"},
+        {"test": "Who wonders whether Paul took the necklace?"}
+    ])
+
+    exp_sentences = ListProperty([
+        {"test": "Who thinks that Paul took the necklace?"},
+        {"test": "What does the detective think that Paul took?"},
+        {"test": "Who wonders whether Paul took the necklace?"}
+    ])
 
 
 class StartScreen(Screen):

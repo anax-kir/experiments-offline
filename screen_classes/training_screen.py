@@ -1,4 +1,5 @@
 from kivy.uix.screenmanager import Screen
+from kivy.properties import ListProperty
 
 import experiment_boxes as exp
 
@@ -7,6 +8,7 @@ class TrainingScreen(Screen):
     """
     Where training sentences are displayed
     """
+    test_sentences = ListProperty([])
 
     def load_experiment(self):
         # self.type is extracted from welcome screen
@@ -15,14 +17,13 @@ class TrainingScreen(Screen):
             "acceptability": "AcceptabilityBox",
             "self-paced": "SelfPacedBox"
         }
-
         box_name = experiment_types[self.type]
 
         # a hack to make the kv file load
-        load_box = getattr(exp, box_name)()
+        load_box = getattr(exp, box_name)(self.test_sentences)
         load_box.load_attr()
         #
-        experiment_box = getattr(exp, box_name)()
+        experiment_box = getattr(exp, box_name)(self.test_sentences)
         saved = self.children[:]
         self.clear_widgets()
         self.add_widget(experiment_box)
