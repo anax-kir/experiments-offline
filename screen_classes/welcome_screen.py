@@ -78,3 +78,7 @@ class LoadDialog(FloatLayout):
 
     def get_path(self):
         return os.path.abspath(__file__ + "/../../")
+
+    def is_csv(self, *args):
+        filename = args[1]
+        return "csv" in filename
