@@ -32,38 +32,35 @@ class WelcomeScreen(Screen):
         self._popup.dismiss()
 
     def show_load(self):
-        content = LoadDialog(load=self.load,
+        self.content = LoadDialog(load=self.load,
                              cancel=self.dismiss_popup)
         self._popup = Popup(title="Upload experiment file",
-                            content=content,
+                            content=self.content,
                             size_hint=(0.9, 0.9))
         self._popup.open()
         _thread.start_new_thread(self.track_changes_dir, ())
 
     def track_changes_dir(self):
         path_to_watch = "."
-        before = dict([(item, None) for item in os.listdir(path_to_watch)])
-        while True:
-            if self.manager.current != "WelcomeScreen":
-                break
-            time.sleep(10)
-            after = dict([(item, None) for item in os.listdir(path_to_watch)])
-            added = [item for item in after if item not in before]
-            removed = [item for item in before if item not in after]
-            if added:
-                print("Added: ", ", ".join(added))
-            if removed:
-                print("Removed: ", ", ".join(removed))
+        before = os.listdir(path_to_watch)
+        filechooser = getattr(self.content.ids, "filechooser")
+        counter = 0
+        while counter < 15:
+            time.sleep(5)
+            after = os.listdir(path_to_watch)
             if before != after:
-                self.dismiss_popup()
-                self.show_load()
+                filechooser._update_files()
+                print("updated")
+                before = after
+            else:
+                counter += 1
 
     def load(self, path, filename):
         try:
             with open(os.path.join(path, filename[0])) as stream:
                 self.text = stream.read()
+                self.exit = True
                 self.manager.current = "DataScreen"
-
             self.dismiss_popup()
         except IndexError:
             pass
@@ -78,3 +75,7 @@ class LoadDialog(FloatLayout):
 
     def get_path(self):
         return os.path.abspath(__file__ + "/../../")
+
+    def is_csv(self, *args):
+        filename = args[1]
+        return "csv" in filename

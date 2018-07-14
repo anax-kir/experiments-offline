@@ -1,4 +1,6 @@
 from kivy.uix.screenmanager import Screen
+from kivy.properties import ListProperty
+
 import experiment_boxes as exp
 
 
@@ -6,6 +8,8 @@ class ExperimentScreen(Screen):
     """
     Where actual experiment takes place
     """
+    exp_sentences = ListProperty([])
+
     def load_experiment(self):
 
         experiment_types = {
@@ -14,7 +18,7 @@ class ExperimentScreen(Screen):
         }
 
         box_name = experiment_types[self.type]
-        experiment_box = getattr(exp, box_name)()
+        experiment_box = getattr(exp, box_name)(self.exp_sentences)
         saved = self.children[:]
         self.clear_widgets()
         self.add_widget(experiment_box)

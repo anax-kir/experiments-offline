@@ -75,6 +75,7 @@
         FileChooserListView:
             id: filechooser
             path: root.get_path()
+            filters: [root.is_csv]
 
         BoxLayout:
             size_hint_y: None

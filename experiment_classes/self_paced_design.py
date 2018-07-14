@@ -20,20 +20,24 @@ from custom_widgets import CircularProgressBar
 
 class SelfPacedDesign:
 
-    def __init__(self, main_box, progress_layout, experiment_part):
+    def __init__(self, main_box, progress_layout, experiment_part, sentences):
         self.main_box = main_box
         self.progress_layout = progress_layout
         self.experiment_part = experiment_part  # test or actual experiment
+        self.sentences = sentences
+        self.current_sentence = 1
+        self.sentences_quantity = len(self.sentences)
+        self.time_codes = []
 
     instructions = "Press [b]ENTER[/b] or [b]SPACE[/b] to see each word in the sentence one by one. \n\n" \
                    "Your task is to read the sentence as quickly as possible, " \
                    "while understanding it, as checked by a simple question on the following screen."
 
-    test_sentences = [
-        {"test": "Who thinks that Paul took the necklace?"},
-        {"test": "What does the detective think that Paul took?"},
-        {"test": "Who wonders whether Paul took the necklace?"}
-    ]
+    # test_sentences = [
+    #     {"test": "Who thinks that Paul took the necklace?"},
+    #     {"test": "What does the detective think that Paul took?"},
+    #     {"test": "Who wonders whether Paul took the necklace?"}
+    # ]
 
     # 1 or 0 - is the answer yes or no
     questions = [
@@ -41,10 +45,6 @@ class SelfPacedDesign:
         {"quest": ["Is Paul a suspect?", 1]},
         {"quest": ["Is Paul guilty?", 0]}
     ]
-
-    current_sentence = 1
-    sentences_quantity = 3
-    time_codes = []
 
     def save_quest_results(self, is_correct, time):
         if self.experiment_part == "training":
@@ -132,7 +132,7 @@ class SelfPacedDesign:
         Window.on_key_down = self.key_reaction
 
         pb = CircularProgressBar()
-        pb.set_value((100 * (self.current_sentence-1)) / len(self.test_sentences))
+        pb.set_value((100 * (self.current_sentence-1)) / self.sentences_quantity)
         saved = self.main_box.children[:]
         saved.remove(self.progress_layout)
         saved.reverse()
@@ -143,7 +143,7 @@ class SelfPacedDesign:
         pb.draw()
         self.main_box.add_widget(self.progress_layout)
         saved = saved[1:]
-        text = self.test_sentences[self.current_sentence-1]["test"]
+        text = self.sentences[self.current_sentence-1]["test"]
         self.sent_text = text
         self.full_text = text.split()
         self.pos = 0
@@ -214,14 +214,14 @@ class SelfPacedDesign:
 
     def save_sent_results(self):
         name = SocioLingScreen.choices["name"]
-        participant = Participant.query.filter(Participant.name == name).first()
-        sentence_id = self.current_sentence
+        self.participant = Participant.query.filter(Participant.name == name).first()
+        self.sentence_id = self.current_sentence
         for word, time_code in zip(self.full_text, self.time_codes):
             result = SelfPacedTrainingSentences(
-                sentence_id,
+                self.sentence_id,
                 word,
                 time_code,
-                participant.id
+                self.participant.id
                 )
             db_session.add(result)
         db_session.commit()

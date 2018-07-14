@@ -14,9 +14,14 @@ from self_paced_design import SelfPacedDesign
 
 class AcceptabilityBox(BoxLayout):
 
+    def __init__(self, sentences):
+        super().__init__()
+        self.sentences = sentences
+
     def create_design(self, experiment_part, *args):
         progress_layout = getattr(self.ids, "progress_bar")
-        self.experiment_design = AcceptabilityDesign(self, progress_layout, experiment_part)
+        self.experiment_design = AcceptabilityDesign(self, progress_layout, experiment_part,
+                                                     self.sentences)
         return self.experiment_design
 
     def load_attr(self, *args):
@@ -25,9 +30,14 @@ class AcceptabilityBox(BoxLayout):
 
 class SelfPacedBox(BoxLayout):
 
+    def __init__(self, sentences):
+        super().__init__()
+        self.sentences = sentences
+
     def create_design(self, experiment_part, *args):
         progress_layout = getattr(self.ids, "progress_bar")
-        self.experiment_design = SelfPacedDesign(self, progress_layout, experiment_part)
+        self.experiment_design = SelfPacedDesign(self, progress_layout, experiment_part,
+                                                 self.sentences)
         return self.experiment_design
 
     def load_attr(self, *args):
