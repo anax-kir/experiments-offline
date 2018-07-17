@@ -1,6 +1,7 @@
 #:kivy 1.10.1
 #:import sm kivy.uix.screenmanager
 #:include screen_classes/welcome.kv
+#:include screen_classes/data.kv
 #:include screen_classes/agreement.kv
 #:include screen_classes/socioling.kv
 #:include screen_classes/training.kv
@@ -19,7 +20,6 @@ ScreenManager:
         id: data_screen
         name: "DataScreen"
         manager: screen_manager
-        text: welcome_screen.text
 
     StartScreen:
         name: "StartScreen"
@@ -51,33 +51,6 @@ ScreenManager:
     EndScreen:
         name: "EndScreen"
         manager: screen_manager
-
-<DataScreen>:
-    BoxLayout:
-        orientation: "vertical"
-
-        ColoredLabel:
-            text: "Please check file contents before pressing continue"
-
-        RstDocument:
-            text: root.text
-
-        BoxLayout:
-            orientation: "horizontal"
-            size_hint_y: None
-            height: 60
-
-            Button:
-                font_size: 25
-                text: "Go back"
-                on_press: root.manager.current = "WelcomeScreen"
-                background_color: (1, 0, 0, 1)
-
-            Button:
-                font_size: 25
-                text: "Continue"
-                on_press: root.manager.current = "StartScreen"
-                background_color: (0, 1, 0, 1)
 
 <StartScreen>:
     BoxLayout:

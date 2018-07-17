@@ -33,12 +33,6 @@ class SelfPacedDesign:
                    "Your task is to read the sentence as quickly as possible, " \
                    "while understanding it, as checked by a simple question on the following screen."
 
-    # test_sentences = [
-    #     {"test": "Who thinks that Paul took the necklace?"},
-    #     {"test": "What does the detective think that Paul took?"},
-    #     {"test": "Who wonders whether Paul took the necklace?"}
-    # ]
-
     # 1 or 0 - is the answer yes or no
     questions = [
         {"quest": ["Did Jim take something?", 0]},
@@ -143,7 +137,7 @@ class SelfPacedDesign:
         pb.draw()
         self.main_box.add_widget(self.progress_layout)
         saved = saved[1:]
-        text = self.sentences[self.current_sentence-1]["test"]
+        text = self.sentences[self.current_sentence-1]
         self.sent_text = text
         self.full_text = text.split()
         self.pos = 0
@@ -152,6 +146,7 @@ class SelfPacedDesign:
                 self.sent_text = self.sent_text.replace(char, "_")
 
         self.sent = Label(text=self.sent_text, font_size="30", color=(0, 0, 0, 1))
+        self.sent.text_size = self.sent.width + 600, self.sent.height
         self.main_box.add_widget(self.sent)
         for widget in saved:
             self.main_box.add_widget(widget)
@@ -204,20 +199,6 @@ class SelfPacedDesign:
     def save_sent_experiment(self):
         for word, time_code in zip(self.full_text, self.time_codes):
             result = SelfPacedExperimentSentences(
-                self.sentence_id,
-                word,
-                time_code,
-                self.participant.id
-                )
-            db_session.add(result)
-        db_session.commit()
-
-    def save_sent_results(self):
-        name = SocioLingScreen.choices["name"]
-        self.participant = Participant.query.filter(Participant.name == name).first()
-        self.sentence_id = self.current_sentence
-        for word, time_code in zip(self.full_text, self.time_codes):
-            result = SelfPacedTrainingSentences(
                 self.sentence_id,
                 word,
                 time_code,

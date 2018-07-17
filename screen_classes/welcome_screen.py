@@ -6,6 +6,7 @@ from kivy.uix.floatlayout import FloatLayout
 import os
 import _thread
 import time
+import pandas as pd
 
 
 class WelcomeScreen(Screen):
@@ -13,7 +14,6 @@ class WelcomeScreen(Screen):
     Welcome screen contents
     """
     loadfile = ObjectProperty(None)
-    text = StringProperty('')
     type = StringProperty('')
     type_chosen = False
 
@@ -57,11 +57,16 @@ class WelcomeScreen(Screen):
 
     def load(self, path, filename):
         try:
-            with open(os.path.join(path, filename[0])) as stream:
-                self.text = stream.read()
-                self.exit = True
-                self.manager.current = "DataScreen"
+            self.all_sentences = pd.read_csv(os.path.join(path, filename[0]), sep=";",
+                                        header="infer",
+                                        names=["type", "group", "number_within_group", "sentence"],
+                                        skip_blank_lines=True, encoding="utf8")
+            self.exit = True
+            data_screen = getattr(self.manager.ids, "data_screen")
+            data_screen.extract_sentences(self.all_sentences)
+            self.manager.current = "DataScreen"
             self.dismiss_popup()
+
         except IndexError:
             pass
 

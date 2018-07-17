@@ -1,5 +1,5 @@
 from kivy.uix.screenmanager import Screen
-from kivy.properties import ListProperty
+from kivy.properties import ObjectProperty
 
 import experiment_boxes as exp
 
@@ -8,7 +8,7 @@ class ExperimentScreen(Screen):
     """
     Where actual experiment takes place
     """
-    exp_sentences = ListProperty([])
+    exp_sentences = ObjectProperty()
 
     def load_experiment(self):
 

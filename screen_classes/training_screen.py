@@ -1,5 +1,5 @@
 from kivy.uix.screenmanager import Screen
-from kivy.properties import ListProperty
+from kivy.properties import ObjectProperty
 
 import experiment_boxes as exp
 
@@ -8,11 +8,10 @@ class TrainingScreen(Screen):
     """
     Where training sentences are displayed
     """
-    test_sentences = ListProperty([])
+    test_sentences = ObjectProperty()
 
     def load_experiment(self):
         # self.type is extracted from welcome screen
-
         experiment_types = {
             "acceptability": "AcceptabilityBox",
             "self-paced": "SelfPacedBox"

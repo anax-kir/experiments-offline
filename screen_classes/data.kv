@@ -1,0 +1,33 @@
+<DataScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        ColoredLabel:
+            text: "Please check file contents before pressing continue"
+
+        ScrollView:
+
+            GridLayout:
+                id: scroll_layout
+                cols: 1
+                padding: 10
+                size_hint: None, None
+                width: 700
+                height: self.minimum_height
+
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint_y: None
+            height: 60
+
+            Button:
+                font_size: 25
+                text: "Go back"
+                on_press: root.manager.current = "WelcomeScreen"
+                background_color: (1, 0, 0, 1)
+
+            Button:
+                font_size: 25
+                text: "Continue"
+                on_press: root.manager.current = "StartScreen"
+                background_color: (0, 1, 0, 1)
